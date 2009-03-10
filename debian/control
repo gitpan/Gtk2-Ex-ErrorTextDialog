@@ -1,0 +1,39 @@
+# Copyright 2009 Kevin Ryde
+
+# This file is part of Gtk2-Ex-ErrorTextDialog.
+#
+# Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 3, or
+# (at your option) any later version.
+#
+# Gtk2-Ex-ErrorTextDialog is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# Build-Depends could have "libtest-pod-perl (>= 1.00),
+# libtest-weaken-perl (>= 2.000)" for more tests, but they're optional
+# and just make the build tools drag in more stuff.
+
+Source: libgtk2-ex-errortextdialog-perl
+Section: perl
+Priority: optional
+Build-Depends: cdbs, debhelper (>= 4)
+Maintainer: Kevin Ryde <user42@zip.com.au>
+Standards-Version: 3.8.0
+Homepage: http://www.geocities.com/user42_kevin/gtk2-ex-errortextdialog/index.html
+Bugs: mailto:user42@zip.com.au
+
+Package: libgtk2-ex-errortextdialog-perl
+Architecture: all
+Depends: perl (>= 5.8.1), libgtk2-perl, libglib-ex-objectbits-perl, libintl-perl, ${misc:Depends}
+Description: Dialog for error messages in a TextView
+ Gtk2::Ex::ErrorTextDialog presents error messages to the user in a
+ dialog with a TextView widget.  Errors accumulate and you can scroll
+ back to see previous ones, cut-and-paste parts, or save them all to a
+ file.

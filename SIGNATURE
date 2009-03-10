@@ -1,0 +1,62 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.55.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 8624bcdae55baeef00cd11d5dfcfa60f68710a02 COPYING
+SHA1 d3bcc17beecfe08cc3110a71a485d18c56a00c1f Changes
+SHA1 5552ca360dfbf2e9f2c99dfd911685a76b9d3993 MANIFEST
+SHA1 2074f996df903da4a657392cb333bb3b5dc319d5 MANIFEST.SKIP
+SHA1 7572a202bad6187f6087f6a9d278c6f620c7c164 META.yml
+SHA1 d0a4f7c33d7a6e7ae953d19d5715e113867839f2 Makefile.PL
+SHA1 7f6028f44ee049bd4ec3646daadf58116be08d14 README
+SHA1 35f256b4d468a4956f50a882c5e9e1398eb02469 debian/changelog
+SHA1 1b6453892473a467d07372d45eb05abc2031647a debian/compat
+SHA1 e25af2b5fd16fbf850bdbf2815398edd06b3113d debian/control
+SHA1 7d1f41d12f8ae84762b7e83545ba86746d49a2fc debian/copyright
+SHA1 c2e16b38c84d4600a069d2e223b68a35402462b4 debian/rules
+SHA1 605b9af6e8c3eda4a55c1080e76e3fedcd578d3a debian/watch
+SHA1 426d1489e09413e8a19f2a9341cd03b3ed37ee6a devel/AddOn-FollowAppend.pm
+SHA1 efbfd0906e923dcf76aa11cde2cf3035772c4feb devel/follow.pl
+SHA1 c526cb596936d92252106bc522d36e7badd4cd20 devel/horiz.pl
+SHA1 70de5e2e798799d3b00fe8f2b21372ba27f5d0ef devel/message-set-text.pl
+SHA1 22f9eac96b99fd482dab7b9926f38671ed3d1a51 devel/message-text-fallback.t
+SHA1 f5bd56c58d6ea49778b1d54a048c68e20380cb11 devel/recursive-warn.pl
+SHA1 ca0f6411e205633cd5b8cbad36776cc3dde9ba4e devel/run.pl
+SHA1 777d15b208f635a197ca111b27ae39ddf94c5c82 devel/save-builder.pl
+SHA1 10c3407ce3bbe64e9f5135c5a1cb90413fddfd5e devel/save-file.pl
+SHA1 fac414cda64a8d4956f8901d5f1438d6de244eb2 devel/screenshot.pl
+SHA1 198fad15c909ccc53241639d2c942f274e9742e8 devel/textview.pl
+SHA1 551b3c01fa8fba5ef4541c3ed3816e642f8dc46d devel/trace-bytes.pl
+SHA1 aab5c30ce2b114cff50f4ea269666f1c69a7d807 devel/version.pl
+SHA1 b0907b6c743ba383e50d1ef28649de001627dac3 examples/simple.pl
+SHA1 06562b3ab9417c014e0e5a5a1179e5ed0cd03b82 lib/Gtk2/Ex/ErrorTextDialog.pm
+SHA1 e82a30acef59c5038f4ebd88a0464a4c95b21b26 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
+SHA1 7cb44ef0195047b4ed5703b28ea2eb636b06e7cb lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
+SHA1 43237c5a7d04725792a20b4918b11f9858f3c507 lib/Gtk2/Ex/TextView/FollowAppend.pm
+SHA1 b31bb3386c1e72d56b157ebfda96e06b5ea24f88 po/Gtk2-Ex-ErrorTextDialog.pot
+SHA1 d596ad0b1a70dfee6d62122f0f5d4bfc1d4a82a5 po/README
+SHA1 780585062edfe3880d6c4072dbffe449ac4ec92c po/header.pot
+SHA1 1a2b71d0124d404de5134663fc1a9e6583cc212c t/ErrorTextDialog.t
+SHA1 0751e32d5c27d05211f155b56d1e82d062bd2be6 t/Handler.t
+SHA1 5b60c2ff6440586f46f23f03a44663686fbb66d9 t/SaveDialog.t
+SHA1 a661a39e55a4127aecb1b97a631c4f01f7dce8c6 t/pod.t
+SHA1 834153454e1b5deee933dc8f32fdebda4540c95d t/test-weaken.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iD8DBQFJta0OLFMCIV9q3ToRAhp4AKCfV9jVyeK3yshDT1LxFzrNVyQyUgCfWJby
+HGoEdlK6frJ+d5aHWTuuGjc=
+=2cyv
+-----END PGP SIGNATURE-----
