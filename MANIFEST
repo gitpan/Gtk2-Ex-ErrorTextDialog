@@ -33,6 +33,7 @@ po/README
 README
 SIGNATURE
 t/ErrorTextDialog.t
+t/FollowAppend.t
 t/Handler.t
 t/pod.t
 t/SaveDialog.t

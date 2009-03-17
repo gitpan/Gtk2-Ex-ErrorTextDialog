@@ -97,7 +97,7 @@ ksdjfksdksdjf s
 }
 
 {
-  my $button = Gtk2::Button->new_with_label ("Induce an error");
+  my $button = Gtk2::Button->new_with_label ("die() error");
   $button->signal_connect (clicked => \&induce_an_error);
   $vbox->pack_start ($button, 0,0,0);
 
@@ -116,7 +116,7 @@ ksdjfksdksdjf s
   }
 }
 {
-  my $button = Gtk2::Button->new_with_label ("Induce a warning");
+  my $button = Gtk2::Button->new_with_label ("warn() message");
   $button->signal_connect (clicked => sub {
                              print "$progname: inducing an warning\n";
                              warn "some sort of perl warning";
@@ -124,7 +124,15 @@ ksdjfksdksdjf s
   $vbox->pack_start ($button, 0,0,0);
 }
 {
-  my $button = Gtk2::Button->new_with_label ("g_warning");
+  my $button = Gtk2::Button->new_with_label ("warn() continuation");
+  $button->signal_connect (clicked => sub {
+                             print "$progname: inducing an warning\n";
+                             warn "\t(an extra remark)";
+                           });
+  $vbox->pack_start ($button, 0,0,0);
+}
+{
+  my $button = Gtk2::Button->new_with_label ("g_warning()");
   $button->signal_connect (clicked => sub {
                              print "$progname: calling g_warning\n";
                              Glib->warning (undef, 'warning about something');
@@ -132,7 +140,7 @@ ksdjfksdksdjf s
   $vbox->pack_start ($button, 0,0,0);
 }
 {
-  my $button = Gtk2::Button->new_with_label ("g_log");
+  my $button = Gtk2::Button->new_with_label ("g_log()");
   $button->signal_connect (clicked => sub {
                              print "$progname: calling g_warning\n";
                              Glib->log ('My-Domain', 'info', 'an informational log message');
@@ -154,7 +162,7 @@ ksdjfksdksdjf s
   $vbox->pack_start ($button, 0,0,0);
 }
 {
-  my $button = Gtk2::Button->new_with_label ("big message");
+  my $button = Gtk2::Button->new_with_label ("big add_message()");
   $button->signal_connect
     (clicked => sub {
        Gtk2::Ex::ErrorTextDialog->popup_add_message

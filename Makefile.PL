@@ -24,7 +24,7 @@ use ExtUtils::MakeMaker;
 use File::Basename;
 
 WriteMakefile
-  (NAME         => 'Gtk2::Ex::ErrorTextDialog',
+  (NAME         => 'Gtk2-Ex-ErrorTextDialog',
    ABSTRACT     => 'Dialog showing error messages in a TextView.',
    VERSION_FROM => 'lib/Gtk2/Ex/ErrorTextDialog.pm',
    AUTHOR       => 'Kevin Ryde <user42@zip.com.au>',

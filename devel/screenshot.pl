@@ -57,7 +57,7 @@ $dialog->signal_connect (destroy => sub { Gtk2->main_quit });
 }
 
 $dialog->add_message ('Some error at foo.pl line 123');
-$dialog->add_message ('A warning from another module at Bar.pm line 456');
+$dialog->add_message ('Look to your orb for the warning at Dopes.pm line 456');
 $dialog->add_message ('Application message about something ...');
 
 Glib::Timeout->add
@@ -109,9 +109,9 @@ sub widget_to_pixbuf_with_frame {
           || croak 'Cannot get widget contents as pixbuf');
 }
 
-# $window is a Gtk2::Gdk::Window, return the Gtk2::Gdk::Window which is the
-# window manager frame.  Return $window itself if no window manager or it
-# doesn't use a frame.
+# $window is a Gtk2::Gdk::Window, return a Gtk2::Gdk::Window (a "foreign"
+# window) which is the window manager frame.  Or return $window itself if no
+# window manager or it doesn't use a frame.
 #
 sub window_get_frame_window {
   my ($window) = @_;
@@ -135,23 +135,20 @@ sub window_get_frame_window {
 
 # $window is a Gtk2::Gdk::Window, return the X window ID of its parent.
 #
-# Have to go through xwininfo here, since Gtk2::Gdk::Window always sets up
-# as if the root window is the parent, even for foreign windows.
-# foreign_new() does an XQueryTree, and so has the real parent XID, but it
-# then pretends the root window is the parent.
+# Have to go through X11::Protocol or xwininfo here, since Gtk2::Gdk::Window
+# always sets up as if the root window is the parent, even for foreign
+# windows.  foreign_new() does an XQueryTree, and so has the real parent
+# XID, but it then pretends the root window is the parent.
 #
 use Scalar::Lazy;
 my $have_x11_protocol = lazy { eval { require X11::Protocol } ? 1 : 0 };
 
 sub window_get_parent_xid {
   my ($window) = @_;
-  if (! defined $have_x11_protocol) {
-    $have_x11_protocol = (
-  }
 
   if ($have_x11_protocol) {
     my $display = $window->get_display;
-    $p = ($display->{'X11::Protocol'}
+    my $p = ($display->{'X11::Protocol'}
           ||= X11::Protocol->new ($display->get_name));
     my ($root, $parent) = $p->req('QueryTree', $window->XID);
     return $parent;

@@ -29,7 +29,7 @@ my $have_display = Gtk2->init_check;
 if (! $have_display) {
   plan skip_all => "due to no DISPLAY available";
 }
-plan tests => 20;
+plan tests => 19;
 
 sub main_iterations {
   my $count = 0;
@@ -42,7 +42,7 @@ sub main_iterations {
 
 #------------------------------------------------------------------------------
 
-my $want_version = 1;
+my $want_version = 2;
 ok ($Gtk2::Ex::ErrorTextDialog::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::ErrorTextDialog->VERSION  >= $want_version,
@@ -87,18 +87,10 @@ diag "Scalar::Util::weaken";
   my $instance = Gtk2::Ex::ErrorTextDialog->instance;
   my $i2 = Gtk2::Ex::ErrorTextDialog->instance;
   is ($instance, $i2, 'instance() same from two calls');
+
   $instance->destroy;
   $i2 = Gtk2::Ex::ErrorTextDialog->instance;
   isnt ($instance, $i2, 'instance() different after ->destroy');
-}
-
-#------------------------------------------------------------------------------
-# _locale_charset()
-
-{
-  my $c1 = Gtk2::Ex::ErrorTextDialog::_locale_charset_or_ascii();
-  my $c2 = Gtk2::Ex::ErrorTextDialog::_locale_charset_or_ascii();
-  is ($c1, $c2, '_locale_charset_or_ascii() same from two calls');
 }
 
 #------------------------------------------------------------------------------
@@ -134,7 +126,8 @@ diag "Scalar::Util::weaken";
     is ($dialog->get('text'), 'new message',
         '_message_dialog_text_widget() messagedialog');
   } else {
-    ok (1, "_message_dialog_text_widget() no 'text' property to read back");
+    ok (1,
+        "_message_dialog_text_widget() no 'text' property to read back");
   }
   $dialog->destroy;
 }

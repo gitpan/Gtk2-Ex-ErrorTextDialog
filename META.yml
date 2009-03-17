@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Gtk2-Ex-ErrorTextDialog
-version:             1
+version:             2
 abstract:            Dialog showing error messages in a TextView.
 license:             gpl
 author:              

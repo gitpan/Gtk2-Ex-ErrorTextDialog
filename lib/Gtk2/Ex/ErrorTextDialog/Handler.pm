@@ -20,19 +20,36 @@ package Gtk2::Ex::ErrorTextDialog::Handler;
 use 5.008001; # for utf8::is_utf8() and PerlIO::get_layers()
 use strict;
 use warnings;
+use PerlIO;   # for F_UTF8
 
-our $VERSION = 1;
+our $VERSION = 2;
+
+# If there's both errors and warnings from a "require" file then a
+# $SIG{'__WARN__'} handler can run while PL_error_count is non-zero.  It's
+# then not possible to load modules like ErrorTextDialog.pm which use BEGIN
+# blocks, they get "BEGIN not safe after compilation error".
+#
+# The strategy at the moment is to pre-load enough to get a message to
+# STDERR, and then if ErrorTextDialog.pm can't load (and isn't already
+# loaded) hold in @pending_messages until later.
+#
+my @pending_messages;
+if (_fh_prints_wide('STDERR')) {
+    require Encode;
+    require I18N::Langinfo;
+}
 
 # not documented ...
 our $exception_handler_depth = 0;
 
 sub exception_handler {
-  my ($msg) = @_;
+  my ($msg, $method) = @_;
+  $method ||= 'add_message';
 
   # Normally $SIG handlers run without themselves shadowed out, and the Glib
   # exception handler doesn't re-invoke, so suspect warnings or errors in
-  # the error handling code won't recurse normally, but have this as some
-  # protection anyway.
+  # the code here won't recurse normally, but have this as some protection
+  # anyway.
   #
   if ($exception_handler_depth >= 3) {
     return;
@@ -41,18 +58,44 @@ sub exception_handler {
     print STDERR "ErrorTextDialog::Handler - ignoring recursive exception_handler calls\n";
     return;
   }
-
   local $exception_handler_depth = $exception_handler_depth + 1;
-  require Gtk2::Ex::ErrorTextDialog;
 
-  my $wide = Gtk2::Ex::ErrorTextDialog::_maybe_locale_bytes_to_wide ($msg);
-  if (_fh_prints_wide('STDERR')) {
-    print STDERR $wide;
+  my $stderr_wide = _fh_prints_wide('STDERR');
+  if (! $stderr_wide) {
+    print STDERR $msg;  # bytes
+  }
+  $msg = _maybe_locale_bytes_to_wide ($msg);
+  if ($stderr_wide) {
+    print STDERR $msg;  # wide chars
+  }
+
+  unshift @pending_messages, $msg;
+  if (eval { require Gtk2::Ex::ErrorTextDialog }) {
+    while (@pending_messages) {
+      $msg = pop @pending_messages;
+      # Various internal Perl_warn() and Perl_warner() calls have the
+      # message followed by a second separate call for an extra remark about
+      # what might be wrong.  Append the latter instead of making it a
+      # separate message.
+      my $method = ($msg =~ /^\t/ ? 'append_message' : 'add_message');
+      Gtk2::Ex::ErrorTextDialog->$method ($msg);
+      Gtk2::Ex::ErrorTextDialog->popup (undef);
+    }
   } else {
+    $msg = $@;
+    if ($msg =~ /BEGIN not safe/) {
+      delete $INC{'Gtk2/Ex/ErrorTextDialog.pm'}; # retry later
+    }
+    if ($stderr_wide) { $msg = _maybe_locale_bytes_to_wide ($msg) }
     print STDERR $msg;
   }
-  Gtk2::Ex::ErrorTextDialog->popup_add_message ($wide, undef);
   return 1; # stay installed
+}
+
+sub warn_handler {
+  my ($msg) = @_;
+  if ($msg =~ /^\t/) {
+  }
 }
 
 sub log_handler {
@@ -71,10 +114,44 @@ sub log_handler {
 #
 sub _fh_prints_wide {
   my ($fh) = @_;
-  require PerlIO;
   return (PerlIO::get_layers($fh, output => 1, details => 1))[-1] # top flags
     & PerlIO::F_UTF8();
 }
+
+# If $str is not wide, and it has some non-ascii, then try to decode them in
+# the locale charset.  PERLQQ means bad stuff is escaped.
+sub _maybe_locale_bytes_to_wide {
+  my ($str) = @_;
+  if (! utf8::is_utf8 ($str) && $str =~ /[^[:ascii:]]/) {
+    require Encode;
+    my $charset = _locale_charset_or_ascii();
+    $str = Encode::decode ($charset, $str, Encode::FB_PERLQQ());
+  }
+  return $str;
+}
+
+# _locale_charset_or_ascii() returns the locale charset from I18N::Langinfo,
+# or 'ASCII' if nl_langinfo() is not available.
+#
+# langinfo() croaks "nl_langinfo() not implemented on this architecture" if
+# not available.  Though anywhere able to run Gtk would have nl_langinfo(),
+# wouldn't it?
+#
+my $_locale_charset_or_ascii;
+sub _locale_charset_or_ascii {
+  goto $_locale_charset_or_ascii;
+}
+BEGIN {
+  $_locale_charset_or_ascii = sub {
+    require I18N::Langinfo;
+    my $subr = sub { I18N::Langinfo::langinfo(I18N::Langinfo::CODESET()) };
+    if (! eval { &$subr(); 1 }) {
+      $subr = sub { 'ASCII' };
+    }
+    goto ($_locale_charset_or_ascii = $subr);
+  };
+}
+
 
 1;
 __END__

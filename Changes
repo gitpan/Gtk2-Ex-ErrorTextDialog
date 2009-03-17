@@ -17,5 +17,10 @@ with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 2, March 2009
+    - try to cope with warnings during compilation errors where
+      further module loading is not possible
+    - join up a second warn call with parenthetical remark
+
 Version 1, March 2009
     - the first version

@@ -42,7 +42,7 @@ sub main_iterations {
 
 #------------------------------------------------------------------------------
 
-my $want_version = 1;
+my $want_version = 2;
 ok ($Gtk2::Ex::ErrorTextDialog::SaveDialog::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::ErrorTextDialog::SaveDialog->VERSION  >= $want_version,

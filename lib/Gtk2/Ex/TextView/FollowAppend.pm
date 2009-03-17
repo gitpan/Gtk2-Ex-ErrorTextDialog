@@ -20,7 +20,7 @@ use strict;
 use warnings;
 use Gtk2;
 
-our $VERSION = 1;
+our $VERSION = 2;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -107,7 +107,7 @@ sub _do_size_allocate {
 # 'insert-pixbuf' and 'insert-child-anchor' on textbuf
 sub _do_textbuf_insert_pixbuf_or_anchor {
   my ($textbuf, $iter, $pixbuf_or_anchor, $ref_weak_self) = @_;
-  _textbuf_insert ($textbuf, $iter, undef, 1, $ref_weak_self);
+  _do_textbuf_insert ($textbuf, $iter, undef, 1, $ref_weak_self);
 }
 
 # 'insert-text' handler on textbuf, plus fakery from 'insert-pixbuf' or

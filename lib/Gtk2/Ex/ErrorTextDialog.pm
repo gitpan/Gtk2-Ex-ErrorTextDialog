@@ -25,7 +25,7 @@ use Locale::TextDomain 1.16; # for bind_textdomain_filter()
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Locale::Messages;
 
-our $VERSION = 1;
+our $VERSION = 2;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -144,14 +144,17 @@ sub set_default_size_chars {
   my $line_height_pixels = ($metrics->get_ascent + $metrics->get_descent)
     / Gtk2::Pango::PANGO_SCALE();
 
-  # fractions of a pixel get rounded
-  # FIXME: $scrolled size ought to include a bit extra width for the
-  # vertical scrollbar.  Maybe force the scrolled height but the textview
-  # width, since the hscrollbar is 'never'.
-  $scrolled->set_size_request ($width_chars * $char_width_pixels,
-                               $height_chars * $line_height_pixels);
+  # Width on textview so the vertical scrollbar is added on top, but height
+  # on the scrolled since the scrollbar means any desired height from the
+  # textview is ignored.  Fractions of a pixel get rounded in the calls.
+  #
+  $textview->set_size_request ($width_chars * $char_width_pixels, -1);
+  $scrolled->set_size_request (-1, $height_chars * $line_height_pixels);
+
   my $req = $self->size_request;
   $scrolled->set_size_request (-1, -1);
+  $textview->set_size_request (-1, -1);
+
   $self->set_default_size ($req->width, $req->height);
 }
 
@@ -214,12 +217,22 @@ sub add_message {
 }
 
 # not documented yet ...
+sub append_message {
+  my ($self, $msg) = @_;
+  ref $self or $self = $self->instance;
+  my $textbuf = $self->{'textbuf'};
+  $textbuf->insert ($textbuf->get_end_iter, $msg);
+  $self->add_separator;
+}
+
+# not documented yet ...
 sub add_text {
   my ($self, $msg) = @_;
   ref $self or $self = $self->instance;
 
   require Gtk2::Ex::ErrorTextDialog::Handler;
-  $msg = $self->{'pending_separator'} . _maybe_locale_bytes_to_wide($msg);
+  $msg = $self->{'pending_separator'}
+    . Gtk2::Ex::ErrorTextDialog::Handler::_maybe_locale_bytes_to_wide($msg);
   $self->{'pending_separator'} = '';
 
   my $textbuf = $self->{'textbuf'};
@@ -237,18 +250,6 @@ sub add_separator {
     # not empty, so want separator
     $self->{'pending_separator'} = MESSAGE_SEPARATOR;
   }
-}
-
-# If $str is not wide, and it has some non-ascii, then try to decode them in
-# the locale charset.  PERLQQ means bad stuff is escaped.
-sub _maybe_locale_bytes_to_wide {
-  my ($str) = @_;
-  if (! utf8::is_utf8 ($str) && $str =~ /[^[:ascii:]]/) {
-    require Encode;
-    my $charset = _locale_charset_or_ascii();
-    $str = Encode::decode ($charset, $str, Encode::FB_PERLQQ());
-  }
-  return $str;
 }
 
 
@@ -318,28 +319,6 @@ sub _log_to_string {
 
 #-----------------------------------------------------------------------------
 # generic helpers
-
-# _locale_charset_or_ascii() returns the locale charset from I18N::Langinfo,
-# or 'ASCII' if nl_langinfo() is not available.
-#
-# langinfo() croaks "nl_langinfo() not implemented on this architecture" if
-# not available.  Though anywhere able to run Gtk would have nl_langinfo(),
-# wouldn't it?
-#
-my $_locale_charset_or_ascii;
-sub _locale_charset_or_ascii {
-  goto $_locale_charset_or_ascii;
-}
-BEGIN {
-  $_locale_charset_or_ascii = sub {
-    require I18N::Langinfo;
-    my $subr = sub { I18N::Langinfo::langinfo(I18N::Langinfo::CODESET()) };
-    if (! eval { &$subr(); 1 }) {
-      $subr = sub { 'ASCII' };
-    }
-    goto ($_locale_charset_or_ascii = $subr);
-  };
-}
 
 # append a newline to $textbuf if it's non-empty and doesn't already end
 # with a newline
@@ -424,8 +403,8 @@ for now don't rely on more than C<Gtk2::Dialog>.
 
 =head1 DESCRIPTION
 
-An ErrorTextDialog presents text error messages to the user accumulating in
-a L<C<Gtk2::TextView>|Gtk2::TextView>.  It's intended for technical things
+An ErrorTextDialog presents text error messages to the user in a
+L<C<Gtk2::TextView>|Gtk2::TextView>.  It's intended for technical things
 like Perl errors and warnings, rather than results of normal user
 operations.
 
@@ -439,7 +418,7 @@ operations.
     | |                                | |
     | +--------------------------------+ |
     +------------------------------------+
-    |                Save-As Clear Close |
+    |                Clear Save-As Close |
     +------------------------------------+
 
 L<C<Gtk2::Ex::ErrorTextDialog::Handler>|Gtk2::Ex::ErrorTextDialog::Handler>
@@ -448,7 +427,7 @@ display in an ErrorTextDialog.
 
 ErrorTextDialog is good if there might be a long cascade of messages from
 one problem, or errors repeated on every screen draw.  In that case the
-dialog can scroll along, but the app might still mostly work.  The TextView
+dialog scrolls along but the app might still mostly work.
 
 The Save-As button lets the user save the messages to a file, say for a bug
 report.  Cut-and-paste works in the usual way too of course.
@@ -498,9 +477,9 @@ converted to unicode for display.  Anything invalid in C<$str> is escaped,
 currently just in C<PERLQQ> style (see L<Encode/Handling Malformed Data>) so
 it will display, though not necessarily very well.
 
-=item C<< Gtk2::Ex::ErrorTextDialog->get_text () >>
+=item C<< Gtk2::Ex::ErrorTextDialog->get_text() >>
 
-=item C<< $errordialog->get_text () >>
+=item C<< $errordialog->get_text() >>
 
 Return a wide-char string of all the messages in the ErrorTextDialog.
 
@@ -510,15 +489,15 @@ Return a wide-char string of all the messages in the ErrorTextDialog.
 
 =over 4
 
-=item C<< Gtk2::Ex::ErrorTextDialog->clear () >>
+=item C<< Gtk2::Ex::ErrorTextDialog->clear() >>
 
-=item C<< $errordialog->clear () >>
+=item C<< $errordialog->clear() >>
 
 Remove all messages in the dialog.  This is the "Clear" button action.
 
-=item C<< Gtk2::Ex::ErrorTextDialog->popup_save_dialog () >>
+=item C<< Gtk2::Ex::ErrorTextDialog->popup_save_dialog() >>
 
-=item C<< $errordialog->popup_save_dialog () >>
+=item C<< $errordialog->popup_save_dialog() >>
 
 Popup the Save dialog, which asks the user for a filename to save the error
 messages to.  This is the "Save As" button action.

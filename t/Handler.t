@@ -21,12 +21,12 @@
 use strict;
 use warnings;
 use Gtk2::Ex::ErrorTextDialog::Handler;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 
 #------------------------------------------------------------------------------
 
-my $want_version = 1;
+my $want_version = 2;
 ok ($Gtk2::Ex::ErrorTextDialog::Handler::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::ErrorTextDialog::Handler->VERSION  >= $want_version,
@@ -56,6 +56,15 @@ ok (eval { Gtk2::Ex::ErrorTextDialog::Handler->VERSION($want_version); 1 },
     ok (Gtk2::Ex::ErrorTextDialog::Handler::_fh_prints_wide($out),
         "_fh_prints_wide() devnull with $encoding prints wide");
   }
+}
+
+#------------------------------------------------------------------------------
+# _locale_charset_or_ascii()
+
+{
+  my $c1 = Gtk2::Ex::ErrorTextDialog::Handler::_locale_charset_or_ascii();
+  my $c2 = Gtk2::Ex::ErrorTextDialog::Handler::_locale_charset_or_ascii();
+  is ($c1, $c2, '_locale_charset_or_ascii() same from two calls');
 }
 
 exit 0;
