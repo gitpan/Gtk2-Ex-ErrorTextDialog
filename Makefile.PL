@@ -32,16 +32,21 @@ WriteMakefile
    SIGN         => 1,
 
    PREREQ_PM    => {
+                    'Devel::GlobalDestruction' => 0,
+
+                    # my ObjectBits
                     'Glib::Ex::SignalIds' => 0,
 
-                    'Gtk2' => 0,  # probably any version ok
+                    # probably any version ok
+                    'Gtk2' => 0,
+                    # part of Gtk2, but name it here since used directly
                     'Gtk2::Pango' => 0,
 
                     # version 1.16 for bind_textdomain_filter() to mung
                     # gettext strings
                     'Locale::TextDomain' => 1.16,
-                    # Locale::Messages doesn't declare a version, only in
-                    # Locale::TextDomain
+                    # Locale::Messages doesn't declare a version, there's
+                    # only one in Locale::TextDomain
                     'Locale::Messages'   => 0,
                    },
    clean     => { FILES => [ '$(POT_TEMP_FILE)' # if bad xgettext
@@ -118,7 +123,8 @@ pc:
 	-podchecker $(LINT_FILES)
 	perlcritic $(LINT_FILES)
 unused:
-	for i in $(LINT_FILES); do perl -Mwarnings::unused -I lib $$i; done
+	(for i in $(LINT_FILES); do perl -c -Mwarnings::unused -I lib $$i; done) \
+	  2>&1 | grep -v 'at /'
 
 # find files in the dist with mod times this year, but without this year in
 # the copyright line

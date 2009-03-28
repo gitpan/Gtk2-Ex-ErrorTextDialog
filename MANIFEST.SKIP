@@ -35,6 +35,7 @@
 ^Makefile$
 ^blib
 ^pm_to_blib
+^TAGS$
 
 
 \.bak$

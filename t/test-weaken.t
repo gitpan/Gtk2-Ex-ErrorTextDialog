@@ -161,7 +161,7 @@ diag "on instance() ErrorTextDialog";
        },
        destructor => sub {
          my ($aref) = @_;
-         my ($error_dialog, $save_dialog) = @$aref;
+         my ($error_dialog) = @$aref;
          $error_dialog->destroy; # save dialog is destroy-with-parent
          main_iterations();
        }

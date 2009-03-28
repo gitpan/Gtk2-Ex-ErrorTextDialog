@@ -34,11 +34,17 @@ msgstr ""
 msgid "Errors"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:123
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:94
+msgid ""
+"Save the error messages to a file, perhaps to include in a bug report.\n"
+"(Cut and paste works too, but saving may be better for very long messages.)"
+msgstr ""
+
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:151
 msgid "An error has occurred"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:124
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:152
 msgid "No errors"
 msgstr ""
 

@@ -11,13 +11,17 @@ devel/follow.pl
 devel/horiz.pl
 devel/message-set-text.pl
 devel/message-text-fallback.t
+devel/not-safe-etd.pl
+devel/not-safe-raw.pl
 devel/recursive-warn.pl
 devel/run.pl
+devel/RunawayWarnAndError.pm
 devel/save-builder.pl
 devel/save-file.pl
 devel/screenshot.pl
 devel/textview.pl
 devel/trace-bytes.pl
+devel/UsingBegin.pm
 devel/version.pl
 examples/simple.pl
 lib/Gtk2/Ex/ErrorTextDialog.pm

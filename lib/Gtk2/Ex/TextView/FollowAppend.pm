@@ -20,7 +20,7 @@ use strict;
 use warnings;
 use Gtk2;
 
-our $VERSION = 2;
+our $VERSION = 3;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -117,7 +117,7 @@ sub _do_textbuf_insert {
   my $self = $$ref_weak_self || return;
   if (DEBUG) { print "FollowAppend insert iter=", $iter->get_offset,
                  " len=$textlen",
-                   " text=",(defined $text ? "'$text'" : "undef"),"\n" };
+                   " text=",(defined $text ? "'$text'" : "undef"),"\n" }
 
   if ($iter->is_end
       && _want_follow ($self,

@@ -25,7 +25,7 @@ use Locale::TextDomain 1.16; # for bind_textdomain_filter()
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Locale::Messages;
 
-our $VERSION = 2;
+our $VERSION = 3;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -38,8 +38,8 @@ use Glib::Object::Subclass
   'Gtk2::MessageDialog',
   signals => { destroy => \&_do_destroy };
 
-use constant { RESPONSE_CLEAR => 0,
-               RESPONSE_SAVE  => 1,
+use constant { RESPONSE_CLEAR   => 0,
+               RESPONSE_SAVE    => 1,
 
                MESSAGE_SEPARATOR => "-----\n" };
 
@@ -67,14 +67,42 @@ sub INIT_INSTANCE {
   $self->set (message_type => 'error',
               resizable => 1);
 
-  $self->add_buttons ('gtk-clear'   => RESPONSE_CLEAR,
-                      'gtk-save-as' => RESPONSE_SAVE,
-                      'gtk-close'   => 'close');
+  #   {
+  #     my $nopopup = $self->{'nopopup'}
+  #       = Gtk2::CheckButton->new_with_mnemonic (__('_No Popup'));
+  #     if ($nopopup->can('set_tooltip_text')) {
+  #       # new style of Gtk 2.12
+  #       $nopopup->set_tooltip_text
+  #         (__('Check this to not popup automatically.
+  # Messages are recorded, but the dialog is not popped up.
+  # This is good to ignore a cascade of errors.'));
+  #     }
+  #     $self->action_area->pack_start ($nopopup, 0,0,0);
+  #
+  #     if ($nopopup->can('set_tooltip_text')) { # new in Gtk 2.12
+  #       $nopopup->set_tooltip_text
+  #         (__('Check this to not popup automatically.
+  # Messages are recorded, but the dialog is not popped up.
+  # This is good to ignore a cascade of errors.'));
+  #     }
+  #   }
 
-  # connect to self instead of a class handler because as of Gtk2-Perl 1.200
+  {
+    my $save = $self->add_button ('gtk-save-as', RESPONSE_SAVE);
+    if ($save->can('set_tooltip_text')) { # new in Gtk 2.12
+      $save->set_tooltip_text
+        (__('Save the error messages to a file, perhaps to include in a bug report.
+(Cut and paste works too, but saving may be better for very long messages.)'));
+    }
+  }
+
+  $self->add_buttons ('gtk-clear' => RESPONSE_CLEAR,
+                      'gtk-close' => 'close');
+
+  # connect to self instead of a class handler because as of Gtk2-Perl 1.220
   # a Gtk2::Dialog class handler for 'response' is called with response IDs
-  # as numbers, not enum strings like 'accept'
-  $self->signal_connect (response   => \&_do_response);
+  # as numbers, not enum strings like 'close'
+  $self->signal_connect (response => \&_do_response);
 
   my $vbox = $self->vbox;
 
@@ -276,10 +304,12 @@ sub popup_add_message {
   $self->popup ($parent);
   $self->add_message ($msg);
 }
-# not documented yet ... might get some options for how aggressively to pop up
+# not documented yet ...
 sub popup {
   my ($self, $parent) = @_;
   ref $self or $self = $self->instance;
+
+  # if ($self->{'nopopup'}->get_active) { return; }
 
   if ($self->mapped) {
     $self->window->raise;

@@ -17,6 +17,9 @@ with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 3, March 2009
+    - during "global destruction" only print to STDERR
+
 Version 2, March 2009
     - try to cope with warnings during compilation errors where
       further module loading is not possible

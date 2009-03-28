@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 # Copyright 2009 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
@@ -17,15 +15,12 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
+
+package UsingBegin;
+use 5.008;
 use strict;
 use warnings;
-
-$SIG{'__WARN__'} = \&handler;
-print "  sigwarn is $SIG{'__WARN__'}\n";
-
-sub handler {
-  print "warn handler\n";
-  print "  sigwarn is $SIG{'__WARN__'}\n";
-  warn "another level\n";
+BEGIN {
+  print "This is a BEGIN block in UsingBegin.pm\n";
 }
-warn "a warning\n";
+1;

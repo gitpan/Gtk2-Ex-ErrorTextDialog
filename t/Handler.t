@@ -18,15 +18,18 @@
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
+use 5.008;
 use strict;
 use warnings;
 use Gtk2::Ex::ErrorTextDialog::Handler;
 use Test::More tests => 7;
 
+## no critic (ProtectPrivateSubs)
+
 
 #------------------------------------------------------------------------------
 
-my $want_version = 2;
+my $want_version = 3;
 ok ($Gtk2::Ex::ErrorTextDialog::Handler::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::ErrorTextDialog::Handler->VERSION  >= $want_version,

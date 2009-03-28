@@ -17,13 +17,14 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+use warnings;
+
 BEGIN {
   $ENV{'LANG'} = 'de_DE';
   $ENV{'LANGUAGE'} = 'de';
 }
 
-use strict;
-use warnings;
 use Gtk2;
 use Gtk2::Ex::ErrorTextDialog;
 use Gtk2::Ex::ErrorTextDialog::Handler;
@@ -142,7 +143,7 @@ ksdjfksdksdjf s
 {
   my $button = Gtk2::Button->new_with_label ("g_log()");
   $button->signal_connect (clicked => sub {
-                             print "$progname: calling g_warning\n";
+                             print "$progname: calling g_log\n";
                              Glib->log ('My-Domain', 'info', 'an informational log message');
                            });
   $vbox->pack_start ($button, 0,0,0);
@@ -170,7 +171,44 @@ ksdjfksdksdjf s
      });
   $vbox->pack_start ($button, 0,0,0);
 }
-
+{
+  my $button = Gtk2::Button->new_with_label ("present() dialog");
+  $button->signal_connect
+    (clicked => sub {
+       Gtk2::Ex::ErrorTextDialog->instance->present;
+     });
+  $vbox->pack_start ($button, 0,0,0);
+}
+{
+  package MyGlobalDestructionBadObject;
+  sub new {
+    my ($class) = @_;
+    my $self = bless { }, $class;
+    $self->{'circular_reference'} = $self;
+    return $self;
+  }
+  sub DESTROY {
+    warn "A warning from MyGlobalDestructionBadObject";
+  }
+  package main;
+  my $button = Gtk2::Button->new_with_label ("induce global destruction\nerror on exit");
+  $button->signal_connect
+    (clicked => sub {
+       MyGlobalDestructionBadObject->new;
+       print "$progname: will give a warning on exit\n";
+     });
+  $vbox->pack_start ($button, 0,0,0);
+}
+{
+  push @INC, $FindBin::Bin;
+  my $button = Gtk2::Button->new_with_label ("load RunawayWarnAndError");
+  $button->signal_connect
+    (clicked => sub {
+       print "$progname: loading RunawayWarnAndError\n";
+       require RunawayWarnAndError;
+     });
+  $vbox->pack_start ($button, 0,0,0);
+}
 
 # $SIG{'__WARN__'} = sub {
 #   require Devel::StackTrace;
@@ -187,7 +225,7 @@ if (0) {
   sub my_die_handler {
     $stacktrace = Devel::StackTrace->new (no_refs => 1);
     die;
-  };
+  }
   $SIG{__DIE__} = \&my_die_handler;
   sub my_exception_handler_with_stacktrace {
     my ($msg) = @_;

@@ -34,7 +34,7 @@ plan tests => 8;
 
 #------------------------------------------------------------------------------
 
-my $want_version = 2;
+my $want_version = 3;
 ok ($Gtk2::Ex::TextView::FollowAppend::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::TextView::FollowAppend->VERSION  >= $want_version,
@@ -76,7 +76,7 @@ ok (eval { Gtk2::Ex::TextView::FollowAppend->VERSION($want_version); 1 },
 
   $textbuf->insert_at_cursor ("hello\n");
 
-  my $anchor = $textbuf->create_child_anchor ($textbuf->get_end_iter);
+  $textbuf->create_child_anchor ($textbuf->get_end_iter);
   $textbuf->insert ($textbuf->get_end_iter, "\n");
 
   my $pixbuf = Gtk2::Gdk::Pixbuf->new ('rgb', 0, 8, 30, 10);

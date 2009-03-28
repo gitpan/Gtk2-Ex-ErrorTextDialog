@@ -23,7 +23,7 @@
 Source: libgtk2-ex-errortextdialog-perl
 Section: perl
 Priority: optional
-Build-Depends: cdbs, debhelper (>= 4)
+Build-Depends: cdbs, debhelper (>= 5)
 Maintainer: Kevin Ryde <user42@zip.com.au>
 Standards-Version: 3.8.1
 Homepage: http://www.geocities.com/user42_kevin/gtk2-ex-errortextdialog/index.html
@@ -31,7 +31,8 @@ Bugs: mailto:user42@zip.com.au
 
 Package: libgtk2-ex-errortextdialog-perl
 Architecture: all
-Depends: perl (>= 5.8.1), libgtk2-perl, libglib-ex-objectbits-perl, libintl-perl, ${misc:Depends}
+Depends: perl (>= 5.8.1), libgtk2-perl, libglib-ex-objectbits-perl, libintl-perl (>= 1.16), libdevel-globaldestruction-perl, ${misc:Depends}
+Recommends: libintl-xs-perl (>= 1.16)
 Description: Dialog for error messages in a TextView
  Gtk2::Ex::ErrorTextDialog presents error messages to the user in a
  dialog with a TextView widget.  Errors accumulate and you can scroll
