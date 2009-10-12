@@ -17,29 +17,16 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
-# __WARN__ handler can run with compilation errors in force.
-#
-
-use strict;
-use warnings;
-use FindBin;
-use lib $FindBin::Bin;
-
-$SIG{__WARN__} = sub {
-  my ($msg) = @_;
-  print "my warn handler(): $msg\n";
-  print "my warn handler(): now loading Quux\n";
-  print "\n";
-  require UsingBegin;
-  return 1;
-};
-
-print "loading MyRunawayWarnAndError\n";
-if (! eval { require MyRunawayWarnAndError }) {
-  my $msg = $@;
-  print "my load(): $msg\n";
+package Foo;
+our $begin_done;
+BEGIN {
+  print "Foo begin @{[$begin_done//0]} @{[$INC{'Foo.pm'}]}\n";
+  $begin_done = 1;
+  # $INC{'Foo.pm'} = 'hello';
 }
 
-print "done\n";
+our $run_done;
+print "Foo runs @{[$run_done//0]} @{[$INC{'Foo.pm'}]}\n";
+$run_done = 1;
+# $INC{'Foo.pm'} = 'hello';
+1;

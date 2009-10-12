@@ -22,9 +22,16 @@ use warnings;
 use Gtk2::Ex::ErrorTextDialog;
 use Test::More;
 
-my $have_test_weaken = eval "use Test::Weaken 2.000; 1";
+use FindBin;
+use File::Spec;
+use lib File::Spec->catdir($FindBin::Bin,'inc');
+use MyTestHelpers;
+use Test::Weaken::Gtk2;
+
+# Test::Weaken 3 for "contents"
+my $have_test_weaken = eval "use Test::Weaken 3; 1";
 if (! $have_test_weaken) {
-  plan skip_all => "due to Test::Weaken 2.000 not available -- $@";
+  plan skip_all => "due to Test::Weaken 3 not available -- $@";
 }
 diag ("Test::Weaken version ", Test::Weaken->VERSION);
 
@@ -35,53 +42,27 @@ if (! $have_display) {
   plan skip_all => "due to no DISPLAY available";
 }
 
-plan tests => 5;
+# set this to 1 for some diagnostic prints
+use constant DEBUG => 0;
 
-diag ("Perl-Gtk2    version ",Gtk2->VERSION);
-diag ("Perl-Glib    version ",Glib->VERSION);
-diag ("Compiled against Glib version ",
-      Glib::MAJOR_VERSION(), ".",
-      Glib::MINOR_VERSION(), ".",
-      Glib::MICRO_VERSION());
-diag ("Running on       Glib version ",
-      Glib::major_version(), ".",
-      Glib::minor_version(), ".",
-      Glib::micro_version());
-diag ("Compiled against Gtk version ",
-      Gtk2::MAJOR_VERSION(), ".",
-      Gtk2::MINOR_VERSION(), ".",
-      Gtk2::MICRO_VERSION());
-diag ("Running on       Gtk version ",
-      Gtk2::major_version(), ".",
-      Gtk2::minor_version(), ".",
-      Gtk2::micro_version());
+plan tests => 6;
 
-sub main_iterations {
-  my $count = 0;
-  while (Gtk2->events_pending) {
-    $count++;
-    Gtk2->main_iteration_do (0);
-  }
-  diag "main_iterations(): ran $count events/iterations\n";
-}
-sub container_children_recursively {
-  my ($widget) = @_;
-  if ($widget->can('get_children')) {
-    return ($widget,
-            map { container_children_recursively($_) } $widget->get_children);
-  } else {
-    return ($widget);
-  }
-}
+SKIP: { eval 'use Test::NoWarnings; 1'
+          or skip 'Test::NoWarnings not available', 1; }
 
-#------------------------------------------------------------------------------
+MyTestHelpers::glib_gtk_versions();
+
+
+#-----------------------------------------------------------------------------
 # TextView::FollowAppend
 
 diag "on TextView::FollowAppend->new()";
 {
   require Gtk2::Ex::TextView::FollowAppend;
   my $leaks = Test::Weaken::leaks
-    (sub { return Gtk2::Ex::TextView::FollowAppend->new });
+    ({ constructor => sub { return Gtk2::Ex::TextView::FollowAppend->new },
+       contents => \&Test::Weaken::Gtk2::contents_container,
+     });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
   if ($leaks) {
     diag "Test-Weaken ", explain $leaks;
@@ -90,11 +71,13 @@ diag "on TextView::FollowAppend->new()";
 diag "on TextView::FollowAppend->new_with_buffer()";
 {
   my $leaks = Test::Weaken::leaks
-    (sub {
-       my $textbuf = Gtk2::TextBuffer->new;
-       my $textview
-         = Gtk2::Ex::TextView::FollowAppend->new_with_buffer ($textbuf);
-       return [ $textview, $textbuf ];
+    ({ constructor => sub {
+         my $textbuf = Gtk2::TextBuffer->new;
+         my $textview
+           = Gtk2::Ex::TextView::FollowAppend->new_with_buffer ($textbuf);
+         return [ $textview, $textbuf ];
+       },
+       contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
   if ($leaks) {
@@ -103,7 +86,7 @@ diag "on TextView::FollowAppend->new_with_buffer()";
 }
 
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # ErrorTextDialog
 
 diag "on new() ErrorTextDialog";
@@ -112,13 +95,10 @@ diag "on new() ErrorTextDialog";
     ({ constructor => sub {
          my $dialog = Gtk2::Ex::ErrorTextDialog->new;
          $dialog->realize;
-         return [ $dialog, container_children_recursively($dialog) ];
+         return $dialog;
        },
-       destructor => sub {
-         my ($aref) = @_;
-         my $dialog = $aref->[0];
-         $dialog->destroy;
-       }
+       destructor => \&Test::Weaken::Gtk2::destructor_destroy,
+       contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
   if ($leaks) {
@@ -133,13 +113,10 @@ diag "on instance() ErrorTextDialog";
     ({ constructor => sub {
          my $dialog = Gtk2::Ex::ErrorTextDialog->instance;
          $dialog->realize;
-         return [ $dialog, container_children_recursively($dialog) ];
+         return $dialog;
        },
-       destructor => sub {
-         my ($aref) = @_;
-         my $dialog = $aref->[0];
-         $dialog->destroy;
-       }
+       destructor => \&Test::Weaken::Gtk2::destructor_destroy,
+       contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
   if ($leaks) {
@@ -152,19 +129,17 @@ diag "on instance() ErrorTextDialog";
   my $leaks = Test::Weaken::leaks
     ({ constructor => sub {
          my $error_dialog = Gtk2::Ex::ErrorTextDialog->new;
-         my $save_dialog = $error_dialog->_save_dialog;
+         my $save_dialog = do {
+           local $SIG{'__WARN__'} = \&MyTestHelpers::warn_suppress_gtk_icon;
+           $error_dialog->_save_dialog
+         };
          $error_dialog->present;
          $save_dialog->present;
-         return [ $error_dialog, $save_dialog,
-                  container_children_recursively($error_dialog),
-                  container_children_recursively($save_dialog) ];
+         return [ $error_dialog, $save_dialog ];
        },
-       destructor => sub {
-         my ($aref) = @_;
-         my ($error_dialog) = @$aref;
-         $error_dialog->destroy; # save dialog is destroy-with-parent
-         main_iterations();
-       }
+       # save dialog is destroy-with-parent, so just destroy it
+       destructor => \&Test::Weaken::Gtk2::destructor_destroy,
+       contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef,
       'Test::Weaken deep garbage collection -- with save dialog too');

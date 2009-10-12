@@ -17,6 +17,10 @@ with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 4, October 2009
+    - Glib idle deferring dialog creation to support messages while a
+      perl compile error is pending
+
 Version 3, March 2009
     - during "global destruction" only print to STDERR
 

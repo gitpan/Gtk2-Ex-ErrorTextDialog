@@ -23,4 +23,5 @@
 # test with: uscan --report --verbose --watchfile=debian/watch
 
 version=3
-http://www.geocities.com/user42_kevin/gtk2-ex-errortextdialog/Gtk2-Ex-ErrorTextDialog-([0-9]+)\.tgz
+http://user42.tuxfamily.org/gtk2-ex-errortext/index.html \
+	.*/Gtk2-Ex-ErrorText-([0-9]+)\.tar\.gz

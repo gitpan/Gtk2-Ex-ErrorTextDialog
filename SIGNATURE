@@ -14,54 +14,65 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 8624bcdae55baeef00cd11d5dfcfa60f68710a02 COPYING
-SHA1 773d5dea60bf6c25e6ed8f5c4eaf77ff838daf3c Changes
-SHA1 093682b153f81674e76a6ebb314041b222c77e09 MANIFEST
-SHA1 779a039b70390a2e64b9011626722ef5d9a6311b MANIFEST.SKIP
-SHA1 7241ee56173d0dff6889eee1d50b50c15eef0f40 META.yml
-SHA1 c3060c707736c3a1b29d68e0b018ed654f860d3b Makefile.PL
-SHA1 7f6028f44ee049bd4ec3646daadf58116be08d14 README
-SHA1 0d6f3df4a81b6f38613af3dc2db5b276a0471354 debian/changelog
+SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
+SHA1 bb72093c9f035253952facd6cbc22d981b75a709 Changes
+SHA1 fb0231c2d81a1c2fa4104657dcae453ea9551340 MANIFEST
+SHA1 dc045e2ca05204c0b50b2e00c00d3b9f8c24c053 MANIFEST.SKIP
+SHA1 9010fe9ae7f823c42e093e667ea4c89fabec8e4b META.yml
+SHA1 67b8d1311e03e3c25c3f750b2408253e84ef25ec Makefile.PL
+SHA1 7025827a532801413d9e032b9a32e9347629ae04 README
+SHA1 be68e3dcf6ac5152a2b9780359d952cde0a9cbd9 debian/changelog
 SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
-SHA1 fe11d1ca8ff5bee0b7734a57d3b6769d0dbfcf05 debian/control
-SHA1 7d1f41d12f8ae84762b7e83545ba86746d49a2fc debian/copyright
+SHA1 565df6b5bfbabfa09187a0e91f77fd465eb64275 debian/control
+SHA1 6a9107c25f8a06d3dc6c2325a03861d85304a37d debian/copyright
 SHA1 c2e16b38c84d4600a069d2e223b68a35402462b4 debian/rules
-SHA1 605b9af6e8c3eda4a55c1080e76e3fedcd578d3a debian/watch
-SHA1 426d1489e09413e8a19f2a9341cd03b3ed37ee6a devel/AddOn-FollowAppend.pm
-SHA1 5737f4430c4859924f231f347537b3422217908a devel/RunawayWarnAndError.pm
+SHA1 85af0ba38da22235682b5f7d37a3cff8654415e3 debian/watch
+SHA1 002bb7af152a28f83b222bce2d359480648a2ff8 devel/AddOn-FollowAppend.pm
+SHA1 cc4e177edc2e0f048548995333c937fdc6e04bde devel/Foo.pm
+SHA1 8d260057247fc4257586ab1cae7f235a7d1ba5ee devel/MyRunawayWarnAndError.pm
 SHA1 3629fd7998c6d063313de855175dd02540adf94e devel/UsingBegin.pm
+SHA1 b6a3f8deaf666623179bd9a7d99fe8b3f92e48f6 devel/devel-loading.pl
 SHA1 efbfd0906e923dcf76aa11cde2cf3035772c4feb devel/follow.pl
+SHA1 35e6d284a4d67218f75d9ff26152019d6fd4c256 devel/frame.pl
 SHA1 c526cb596936d92252106bc522d36e7badd4cd20 devel/horiz.pl
+SHA1 639a975edca91025e399bc2be6f9f2dd78b0b9e8 devel/lib/Gtk2/Ex/WindowManagerFrame.pm
+SHA1 f800248410e874ce46b25fed653d9908de2cb27d devel/loading.pl
 SHA1 70de5e2e798799d3b00fe8f2b21372ba27f5d0ef devel/message-set-text.pl
-SHA1 22f9eac96b99fd482dab7b9926f38671ed3d1a51 devel/message-text-fallback.t
-SHA1 ad08c36e4f566cb078a221e1479cd23f02ac3648 devel/not-safe-etd.pl
-SHA1 1e5f55431b5790a5d3e54c145c1d9767f67a6232 devel/not-safe-raw.pl
+SHA1 10b6d9e7022ffff649afacaf536b1474d5ad420e devel/message-text-fallback.t
+SHA1 4b7056de849eb6842b545c13b527a77503fb031a devel/not-safe-etd.pl
+SHA1 447337b39b9af40fe2da242a9340bdaf3f02a8b3 devel/not-safe-raw.pl
 SHA1 c92bc9426a1c5491a88daaacd984e32cf0bd05d9 devel/recursive-warn.pl
-SHA1 4954f126ad87e715d67918279cbbfa42b18ab2cd devel/run.pl
+SHA1 c6a5bf958727152b896797293b55986c11f64fcd devel/run.pl
 SHA1 777d15b208f635a197ca111b27ae39ddf94c5c82 devel/save-builder.pl
-SHA1 10c3407ce3bbe64e9f5135c5a1cb90413fddfd5e devel/save-file.pl
-SHA1 e18de1702c9c1aa5add4122f34ad591d99492e5f devel/screenshot.pl
+SHA1 3f51d1d5145841c7c54122bdae2861dfc754d99f devel/save-file.pl
+SHA1 5fa7ad9b58e4977d7984af2a6a8a2675ef700319 devel/screenshot.pl
 SHA1 198fad15c909ccc53241639d2c942f274e9742e8 devel/textview.pl
 SHA1 551b3c01fa8fba5ef4541c3ed3816e642f8dc46d devel/trace-bytes.pl
 SHA1 aab5c30ce2b114cff50f4ea269666f1c69a7d807 devel/version.pl
-SHA1 b0907b6c743ba383e50d1ef28649de001627dac3 examples/simple.pl
-SHA1 bc1b4114eb7f4ef95222239b0052e24671dc0aec lib/Gtk2/Ex/ErrorTextDialog.pm
-SHA1 24df8625f0a3b711f59c639a2b748d0f5e489f38 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
-SHA1 f68d9f74d4a08c764b5e56bfaf886214f2ad2d8b lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
-SHA1 42d51a080f2c5813c21c30c57a8808d33e0b9b1b lib/Gtk2/Ex/TextView/FollowAppend.pm
-SHA1 a660c613d271fcfcc175db8fe88447f34c1982a8 po/Gtk2-Ex-ErrorTextDialog.pot
-SHA1 b08353fcf9cb93543526fcde909108c15c315a4f po/README
+SHA1 be6284bfdd23028eb6fd2c0ee7a3a95457ef576a examples/simple.pl
+SHA1 c311f18709267b70358125b4e28053f092142108 inc/MyMakeMakerExtras.pm
+SHA1 bf2a374ebca01ebcc5459cd1dc7dc2681221f0cd inc/MyMakeMakerGettext.pm
+SHA1 7af470c9a8c1f5d379f546ec80dcf00e43ceb8ce lib/Gtk2/Ex/ErrorTextDialog.pm
+SHA1 70cf7760defb6f75bf716c9cc4e0346a81274cb0 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
+SHA1 79c6c3c8b9ffdb13af096cc3365003486a92f9bc lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
+SHA1 19ddd2624860361f46456a6a44505aa625acfecc lib/Gtk2/Ex/TextView/FollowAppend.pm
+SHA1 9b7bb4209049b1b0084b801ad3a2ece7f9ec9d06 po/Gtk2-Ex-ErrorTextDialog.pot
+SHA1 1fa56ff6f88802517734f61a1f637500e50b0860 po/README
 SHA1 780585062edfe3880d6c4072dbffe449ac4ec92c po/header.pot
-SHA1 0d10ce617fd2e9d9f5b9832f8c907bc0bb84a16e t/ErrorTextDialog.t
-SHA1 a4bf3ebd038e358d0a2c53a2567b9344764b610d t/FollowAppend.t
-SHA1 5413ce480e1bc228f33e7368603a7712091698b8 t/Handler.t
-SHA1 9163f8740eef8893076a6a96dc9c391f75f04b77 t/SaveDialog.t
-SHA1 a661a39e55a4127aecb1b97a631c4f01f7dce8c6 t/pod.t
-SHA1 2ec8c4c0b59cc20cedcd6bb85364fc97bf0b7b0d t/test-weaken.t
+SHA1 378b932305fb60823467c2af3c771fe3fc295a13 t/0-META-read.t
+SHA1 a343ed4dce96d05de51eed1ec065911584b96fce t/0-Test-DistManifest.t
+SHA1 bba0dc087cbe64d8f100ab77e6cef061c0bebf27 t/0-Test-Pod.t
+SHA1 526b424e94d6a7b36d78e991445200c2681c14a7 t/ErrorTextDialog.t
+SHA1 f893fc7150012b98ec13908c0a0871fe9180527d t/FollowAppend.t
+SHA1 af10334a473f706bbf657066e8886e526504df54 t/Handler.t
+SHA1 098ab6ca0f9e7d5bd281aeb40bea7130d2ad3270 t/SaveDialog.t
+SHA1 6d101ce65245026e5e29c641ecb247fc4f4f177b t/inc/MyTestHelpers.pm
+SHA1 624f2ce0737bca05c6e0023d764115b43eee4eed t/inc/Test/Weaken/Gtk2.pm
+SHA1 a7d8a3c795c0384da6b8f2f1433beb9114c6ca18 t/test-weaken.t
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-iD8DBQFJzWgHLFMCIV9q3ToRAltcAKCTR5jzJXJKg1x+/2iS0n1lzz2XwgCeJpgu
-1LwFuavrckzFAxFaQMwnoiQ=
-=u5Fp
+iD8DBQFK059CLFMCIV9q3ToRAtszAKCHuWlWs5n2bj4nVcE/pRs1y5V9nwCeNxrV
+ZYu2y7ZgT7clreZ1laKfmpE=
+=O3hM
 -----END PGP SIGNATURE-----

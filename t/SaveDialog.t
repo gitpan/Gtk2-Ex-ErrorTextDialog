@@ -23,26 +23,26 @@ use warnings;
 use Gtk2::Ex::ErrorTextDialog::SaveDialog;
 use Test::More;
 
+use FindBin;
+use File::Spec;
+use lib File::Spec->catdir($FindBin::Bin,'inc');
+use MyTestHelpers;
+use Test::Weaken::Gtk2;
+
 require Gtk2;
 Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
 my $have_display = Gtk2->init_check;
 if (! $have_display) {
   plan skip_all => "due to no DISPLAY available";
 }
-plan tests => 8;
+plan tests => 9;
 
-sub main_iterations {
-  my $count = 0;
-  while (Gtk2->events_pending) {
-    $count++;
-    Gtk2->main_iteration_do (0);
-  }
-  diag "main_iterations(): ran $count events/iterations\n";
-}
+SKIP: { eval 'use Test::NoWarnings; 1'
+          or skip 'Test::NoWarnings not available', 1; }
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 
-my $want_version = 3;
+my $want_version = 4;
 ok ($Gtk2::Ex::ErrorTextDialog::SaveDialog::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::ErrorTextDialog::SaveDialog->VERSION  >= $want_version,
@@ -52,7 +52,10 @@ ok (eval { Gtk2::Ex::ErrorTextDialog::SaveDialog->VERSION($want_version); 1 },
 ok (! eval { Gtk2::Ex::ErrorTextDialog::SaveDialog->VERSION($want_version + 1000); 1 },
     "VERSION class check " . ($want_version + 1000));
 {
-  my $dialog = Gtk2::Ex::ErrorTextDialog::SaveDialog->new;
+  my $dialog = do {
+    local $SIG{'__WARN__'} = \&MyTestHelpers::warn_suppress_gtk_icon;
+    Gtk2::Ex::ErrorTextDialog::SaveDialog->new;
+  };
 
   ok ($dialog->VERSION  >= $want_version,
       'VERSION object method');
@@ -65,11 +68,14 @@ ok (! eval { Gtk2::Ex::ErrorTextDialog::SaveDialog->VERSION($want_version + 1000
 }
 
 {
-  my $dialog = Gtk2::Ex::ErrorTextDialog::SaveDialog->new;
+  my $dialog = do {
+    local $SIG{'__WARN__'} = \&MyTestHelpers::warn_suppress_gtk_icon;
+    Gtk2::Ex::ErrorTextDialog::SaveDialog->new;
+  };
   require Scalar::Util;
   Scalar::Util::weaken ($dialog);
   $dialog->destroy;
-  main_iterations ();
+  MyTestHelpers::main_iterations ();
   is ($dialog, undef, 'garbage collect after destroy');
 }
 

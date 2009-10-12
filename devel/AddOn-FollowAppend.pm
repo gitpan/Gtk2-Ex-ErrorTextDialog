@@ -208,7 +208,7 @@ L<Gtk2::Ex::TextView>
 
 =head1 HOME PAGE
 
-L<http://www.geocities.com/user42_kevin/gtk2-ex-errortextdialog/>
+L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html>
 
 =head1 LICENSE
 

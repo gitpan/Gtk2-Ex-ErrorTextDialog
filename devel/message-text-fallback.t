@@ -22,6 +22,13 @@ use strict;
 use warnings;
 use Test::More;
 
+use FindBin;
+use File::Spec;
+use lib File::Spec->catdir($FindBin::Bin,
+                           File::Spec->updir,'t',
+                           'lib');
+use MyTestHelpers;
+
 require Gtk2;
 Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
 my $have_display = Gtk2->init_check;
@@ -30,15 +37,6 @@ if (! $have_display) {
 }
 plan tests => 3;
 
-
-sub main_iterations {
-  my $count = 0;
-  while (Gtk2->events_pending) {
-    $count++;
-    Gtk2->main_iteration_do (0);
-  }
-  diag "main_iterations(): ran $count events/iterations\n";
-}
 
 #------------------------------------------------------------------------------
 # _message_dialog_text_widget()

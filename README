@@ -20,9 +20,7 @@ with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 Gtk2-Ex-ErrorTextDialog presents error messages to the user in a
 dialog with a TextView widget.  Errors accumulate and you can scroll
-back to see previous ones, cut-and-paste parts, or save them to a
-file.
-
+back to see previous ones, cut-and-paste parts, or save to a file.
 The ErrorTextDialog home page is
 
-http://www.geocities.com/user42_kevin/gtk2-ex-errortextdialog/index.html
+    http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html

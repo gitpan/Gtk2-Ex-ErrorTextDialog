@@ -16,13 +16,19 @@
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
+# package Gtk2::Ex::ErrorTextDialog;
+# our @_instance_pending;
+
 package Gtk2::Ex::ErrorTextDialog::Handler;
 use 5.008001; # for utf8::is_utf8() and PerlIO::get_layers()
 use strict;
 use warnings;
-use PerlIO;   # for F_UTF8
 use Devel::GlobalDestruction ();
-our $VERSION = 3;
+use Glib;
+use Glib::Ex::SourceIds;
+use PerlIO;   # for F_UTF8
+
+our $VERSION = 4;
 
 # If there's both errors and warnings from a "require" file then a
 # $SIG{'__WARN__'} handler can run while PL_error_count is non-zero.  It's
@@ -30,17 +36,17 @@ our $VERSION = 3;
 # blocks, they get "BEGIN not safe after compilation error".
 #
 # The strategy at the moment is to pre-load enough to get a message to
-# STDERR, and then if ErrorTextDialog.pm can't load (and isn't already
-# loaded) hold in @pending_messages until later.
+# STDERR, and then install a Glib idle handler to create the dialog when
+# it's safe to do so.
 #
-my @pending_messages;
 if (_fh_prints_wide('STDERR')) {
-    require Encode;
-    require I18N::Langinfo;
+  require Encode;
+  require I18N::Langinfo;
 }
 
 # not documented ...
 our $exception_handler_depth = 0;
+our $idle_handler_id;
 
 sub exception_handler {
   my ($msg) = @_;
@@ -63,58 +69,23 @@ sub exception_handler {
   if ($stderr_wide) {
     $msg = _maybe_locale_bytes_to_wide ($msg);
     print STDERR $msg;  # wide chars
-    if (Devel::GlobalDestruction::in_global_destruction()) {
-      return 1; # stay installed
-    }
   } else {
     print STDERR $msg;  # bytes
-    if (Devel::GlobalDestruction::in_global_destruction()) {
-      return 1; # stay installed
-    }
-    $msg = _maybe_locale_bytes_to_wide ($msg);
   }
 
-  unshift @pending_messages, $msg;
-  if (_attempt_load ('Gtk2::Ex::TextView::FollowAppend')
-      && _attempt_load ('Gtk2::Ex::ErrorTextDialog')) {
-    while (@pending_messages) {
-      $msg = pop @pending_messages;
-      # Various internal Perl_warn() and Perl_warner() calls have the
-      # message followed by a second separate call for an extra remark about
-      # what might be wrong.  Append the latter instead of making it a
-      # separate message.
-      my $method = ($msg =~ /^\t/ ? 'append_message' : 'add_message');
-      Gtk2::Ex::ErrorTextDialog->$method ($msg);
-      Gtk2::Ex::ErrorTextDialog->popup (undef);
-    }
-  } else {
-    $msg = $@;
-    if ($stderr_wide) { $msg = _maybe_locale_bytes_to_wide ($msg) }
-    print STDERR $msg;
+  unless (Devel::GlobalDestruction::in_global_destruction()) {
+    push @Gtk2::Ex::ErrorTextDialog::_instance_pending, $msg;
+    $idle_handler_id ||= Glib::Ex::SourceIds->new
+      (Glib::Idle->add (\&_idle_handler, undef, Glib::G_PRIORITY_HIGH));
   }
   return 1; # stay installed
 }
-
-sub _attempt_load {
-  my ($class) = @_;
-  # print "\nrequire $class\n";
-  if (eval "require $class") {
-    return 1;
-  } else {
-    # print "eval bad: $@\n";
-    if ($@ =~ /BEGIN not safe/) {
-      my $filename = $class;
-      $filename =~ s{::}{/};
-      delete $INC{"$filename.pm"}; # retry later
-    }
-    return 0;
-  }
-}
-
-sub warn_handler {
-  my ($msg) = @_;
-  if ($msg =~ /^\t/) {
-  }
+sub _idle_handler {
+  undef $idle_handler_id;
+  require Gtk2::Ex::ErrorTextDialog;
+  Gtk2::Ex::ErrorTextDialog->add_message (undef);
+  Gtk2::Ex::ErrorTextDialog->popup (undef);
+  return 0; # Glib::SOURCE_REMOVE;
 }
 
 sub log_handler {
@@ -122,10 +93,10 @@ sub log_handler {
   exception_handler (Gtk2::Ex::ErrorTextDialog::_log_to_string (@_));
 }
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # generic helpers
 
-# _fh_prints_wide($fh) returns true if wide chars can be prited to file
+# _fh_prints_wide($fh) returns true if wide chars can be printed to file
 # handle $fh.
 #
 # PerlIO::get_layers() is pre-loaded, probably, but PerlIO::F_UTF8() from
@@ -193,64 +164,60 @@ Gtk2::Ex::ErrorTextDialog::Handler -- exception handlers using ErrorTextDialog
 
 =head1 DESCRIPTION
 
-This module supplies error and warning handler functions which display their
-messages in an ErrorTextDialog, as well as printing to C<STDERR>.  The
-handlers are small and the idea is to keep memory use down by not loading
-the ErrorTextDialog until needed.  If your program works then the dialog may
-never be needed!
+This module supplies error and warning handler functions which print to
+C<STDERR> and display in an ErrorTextDialog.  The handlers are small and the
+idea is to keep memory use down by not loading the full ErrorTextDialog
+until needed.  If your program works then the dialog may never be needed!
 
-When a new error occurs an existing ErrorTextDialog is raised so the error
-is seen.  It's not "presented" though, so the keyboard focus is unchanged
-(unless the window manager is focus-follows-mouse style).  This also means
-if the dialog is iconified it's not re-opened for a new message, just the
-icon is raised (by the window manager).  Iconifying is a good way to hide
-the errors if there's a big cascade.  Perhaps the way this works will change
-though.
+When an error occurs an existing ErrorTextDialog is raised so the error is
+seen but it's not "presented", so it doesn't steal keyboard focus (unless
+the window manager is focus-follows-mouse style).  This also means if the
+dialog is iconified it's not re-opened for a new message, just the icon is
+raised (by the window manager).  Iconifying is a good way to hide errors if
+there's a big cascade.  But maybe this will change in the future.
 
 The default action on closing the error dialog is to hide it, so past
-messages remain.  In an application it can be good to have a menu entry etc
-which pops up the dialog with C<< Gtk2::Ex::ErrorTextDialog->present >> or
-similar, so the user can see past errors after closing the dialog.
+messages are kept.  In an application it can be good to have a menu entry
+etc which pops up the dialog with
+
+    Gtk2::Ex::ErrorTextDialog->instance->present;
+
+or similar, so the user can see past errors again after closing the dialog.
 
 =head2 Wide Chars
 
-The dialog displays unicode characters; if a message is a byte string then
-the dialog C<add_message> assumes it's in the locale charset and converts
-for display.  If C<STDERR> takes wide chars (because it has an encoding
-layer pushed) then the same conversion is used to print to it.
+If a message is a byte string then it's assumed to be in the locale charset.
+If C<STDERR> takes wide chars (because it has a PerlIO encoding layer) then
+the message is converted for the print.  The dialog always displays wide
+chars (its C<add_message> does a conversion if necessary).
 
-If C<STDERR> only takes raw bytes but a message string has wide chars, then
+If a message is a wide char string but C<STDERR> only takes raw bytes, then
 currently they're just printed as normal and will generally provoke a "wide
 char in print" warning.  Perhaps this will change in the future.
 
 =head2 Global Destruction
 
-During "global destruction" of objects when Perl or a Perl thread is exiting
-(see L<perlobj/Two-Phased Garbage Collection>), messages are printed to
-C<STDERR> but not put to the dialog.  The dialog is an object and is either
-already destroyed or is about to be destroyed at that point.
+During "global destruction" of objects (see L<perlobj/Two-Phased Garbage
+Collection>) when Perl or a Perl thread is exiting, messages are printed to
+C<STDERR> but not put to the dialog.  The dialog is an object and at that
+point is either already destroyed or is about to be destroyed.
 
 Exceptions during global destruction can arise from C<DESTROY> methods on
 Perl objects and C<destroy> etc signal emissions on Gtk objects.  Global
-destruction phase is identified using
-L<C<Devel::GlobalDestruction>|Devel::GlobalDestruction>.
+destruction is identified using C<Devel::GlobalDestruction>.
 
 =head2 Compilation Errors and Warnings
 
-In a C<require> etc, if both errors and warnings occur during the compile
-then C<$SIG{__WARN__}> calls can be made while a compile error is pending.
-Perl doesn't allow the handler code to load other modules in that case
-("BEGIN not safe after errors").
+Messages are printed to C<STDERR> immediately, but for the dialog are
+instead saved and added later under a high-priority Glib idle handler.  The
+idle handler runs before Gtk resizing or redrawing, so it should be the next
+thing seen by the user.
 
-C<exception_handler> below will print to C<STDERR> immediately but if the
-ErrorTextDialog code hasn't already been loaded then it accumulates messages
-until it's possible to load and create the dialog.  Generally this is a
-short time later when the compile error comes through the handler.
-
-The prohibition on C<BEGIN> is to protect code which depends on a prior
-C<import> etc having run.  (Perhaps it's possible to load something
-unrelated like ErrorTextDialog or Encode, or at least attempt it, if the
-pending errors could somehow be suspended.)
+This is important for C<$SIG{__WARN__}> handler calls which happen while a
+Perl compile error is pending.  In that case it's not possible to load the
+ErrorTextDialog module (or any further modules).  Attempting to do would be
+a further error (see L<perldiag/BEGIN not safe after errors--compilation
+aborted>).
 
 =head1 FUNCTIONS
 
@@ -259,7 +226,8 @@ pending errors could somehow be suspended.)
 =item C<< Gtk2::Ex::ErrorTextDialog::Handler::exception_handler ($str) >>
 
 A function suitable for use with C<< Glib->install_exception_handler >> (see
-L<Glib/EXCEPTIONS>) or with Perl's C<< $SIG{'__WARN__'} >> (see L<perlipc>).
+L<Glib/EXCEPTIONS>) or with Perl's C<< $SIG{'__WARN__'} >> (see
+L<perlvar/%SIG>).
 
     Glib->install_exception_handler
       (\&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler);
@@ -281,20 +249,20 @@ prints and displays per the C<exception_handler> function above.
       \&Gtk2::Ex::ErrorTextDialog::Handler::log_handler);
 
 As of Glib-Perl 1.200, various standard log domains are trapped already and
-turned into Perl C<warn> calls (see C<gperl_handle_logs_for> in
-L<Glib::xsapi>).  So if you trap C<< $SIG{'__WARN__'} >> then you already
-get Glib and Gtk logs without any explicit C<Glib::Log> handlers.
+turned into Perl C<warn> calls (see L<Glib::xsapi/GLog> for function
+C<gperl_handle_logs_for>).  So if you trap C<< $SIG{'__WARN__'} >> then you
+already get Glib and Gtk logs without any explicit C<Glib::Log> handlers.
 
 =back
 
 =head1 SEE ALSO
 
-L<Gtk2::Ex::ErrorTextDialog>, L<Glib/EXCEPTIONS>, L<perlipc>,
-L<Glib::xsapi>, L<Devel::GlobalDestruction>
+L<Gtk2::Ex::ErrorTextDialog>, L<Glib/EXCEPTIONS>, L<perlvar/%SIG>,
+L<Glib::xsapi/GLog>, L<Devel::GlobalDestruction>
 
 =head1 HOME PAGE
 
-L<http://www.geocities.com/user42_kevin/gtk2-ex-errortextdialog/>
+L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 

@@ -18,28 +18,28 @@
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
-# __WARN__ handler can run with compilation errors in force.
-#
-
 use strict;
 use warnings;
+
 use FindBin;
+my $progname = $FindBin::Script;
 use lib $FindBin::Bin;
 
-$SIG{__WARN__} = sub {
-  my ($msg) = @_;
-  print "my warn handler(): $msg\n";
-  print "my warn handler(): now loading Quux\n";
-  print "\n";
-  require UsingBegin;
-  return 1;
-};
+our $in_progress = 0;
+sub hook {
+  my ($self, $filename) = @_;
 
-print "loading MyRunawayWarnAndError\n";
-if (! eval { require MyRunawayWarnAndError }) {
-  my $msg = $@;
-  print "my load(): $msg\n";
+  print "hook $filename in_progress=$in_progress\n";
+  if ($filename eq 'Foo.pm' && ! $in_progress) {
+    local $in_progress = 1;
+    print "hook require Foo\n";
+    require Foo;
+    print "  done hook require Foo\n";
+  }
+  return;
 }
+unshift @INC, \&hook;
 
-print "done\n";
+print "require\n";
+require Foo;
+print "require done\n";

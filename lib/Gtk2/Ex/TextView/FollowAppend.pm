@@ -16,11 +16,12 @@
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 package Gtk2::Ex::TextView::FollowAppend;
+use 5.008;
 use strict;
 use warnings;
 use Gtk2;
 
-our $VERSION = 3;
+our $VERSION = 4;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -31,7 +32,6 @@ use Glib::Object::Subclass
                notify        => \&_do_notify,
                destroy       => \&_do_destroy,
              };
-
 
 sub new_with_buffer {
   my ($class, $textbuf) = @_;
@@ -60,10 +60,11 @@ sub _do_notify {
   if (DEBUG) { print "FollowAppend notify ",$pspec->get_name,"\n"; }
   $self->signal_chain_from_overridden ($pspec);
 
-  # once 'destroy' runs it's important not to call ->get_buffer() since that
-  # func creates a new TextBuffer in place of what gtk_text_view_destroy()
-  # just destroyed and set to NULL.  If a textbuf is re-created like that it
-  # leads to a fatal error in gtk_text_view_finalize().
+  # after 'destroy' runs it's important not to call ->get_buffer() since
+  # that func creates a new TextBuffer in place of what
+  # gtk_text_view_destroy() just destroyed and set to NULL.  If a textbuf is
+  # re-created like that it leads to a fatal error in
+  # gtk_text_view_finalize().
   #
   if (! $self->{'destroyed'} && $pspec->get_name eq 'buffer') {
     require Glib::Ex::SignalIds;
@@ -278,7 +279,7 @@ L<Gtk2::Ex::TextView>, L<Gtk2::Ex::TextBuffer>
 
 =head1 HOME PAGE
 
-L<http://www.geocities.com/user42_kevin/gtk2-ex-errortextdialog/>
+L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 

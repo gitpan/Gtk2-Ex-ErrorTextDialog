@@ -22,14 +22,17 @@ use 5.008;
 use strict;
 use warnings;
 use Gtk2::Ex::ErrorTextDialog::Handler;
-use Test::More tests => 7;
+use Test::More tests => 8;
+
+SKIP: { eval 'use Test::NoWarnings; 1'
+          or skip 'Test::NoWarnings not available', 1; }
 
 ## no critic (ProtectPrivateSubs)
 
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 
-my $want_version = 3;
+my $want_version = 4;
 ok ($Gtk2::Ex::ErrorTextDialog::Handler::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::ErrorTextDialog::Handler->VERSION  >= $want_version,
@@ -41,7 +44,7 @@ ok (eval { Gtk2::Ex::ErrorTextDialog::Handler->VERSION($want_version); 1 },
       "VERSION class check $check_version");
 }
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # _fh_prints_wide()
 
 {
@@ -61,7 +64,7 @@ ok (eval { Gtk2::Ex::ErrorTextDialog::Handler->VERSION($want_version); 1 },
   }
 }
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # _locale_charset_or_ascii()
 
 {

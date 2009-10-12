@@ -30,21 +30,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:60
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:69
 msgid "Errors"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:94
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:103
 msgid ""
 "Save the error messages to a file, perhaps to include in a bug report.\n"
 "(Cut and paste works too, but saving may be better for very long messages.)"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:151
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:160
 msgid "An error has occurred"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:152
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:161
 msgid "No errors"
 msgstr ""
 

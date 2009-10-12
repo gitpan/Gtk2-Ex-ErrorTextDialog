@@ -34,8 +34,8 @@ $SIG{'__WARN__'} = \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
 Glib->install_exception_handler
   (\&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler);
 
-print "loading RunawayWarnAndError\n";
-if (! eval { require RunawayWarnAndError }) {
+print "loading MyRunawayWarnAndError\n";
+if (! eval { require MyRunawayWarnAndError }) {
   my $msg = $@;
   print "my load(): $msg\n";
   my $filename = 'Gtk2/Ex/ErrorTextDialog.pm';

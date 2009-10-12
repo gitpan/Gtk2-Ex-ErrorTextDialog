@@ -29,12 +29,14 @@ my $have_display = Gtk2->init_check;
 if (! $have_display) {
   plan skip_all => "due to no DISPLAY available";
 }
-plan tests => 8;
+plan tests => 9;
 
+SKIP: { eval 'use Test::NoWarnings; 1'
+          or skip 'Test::NoWarnings not available', 1; }
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 
-my $want_version = 3;
+my $want_version = 4;
 ok ($Gtk2::Ex::TextView::FollowAppend::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::TextView::FollowAppend->VERSION  >= $want_version,
@@ -57,7 +59,7 @@ ok (eval { Gtk2::Ex::TextView::FollowAppend->VERSION($want_version); 1 },
       "VERSION object check $check_version");
 }
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # destruction
 
 {
@@ -67,7 +69,7 @@ ok (eval { Gtk2::Ex::TextView::FollowAppend->VERSION($want_version); 1 },
   is ($textview, undef, 'garbage collect after weaken');
 }
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # insertions
 
 {

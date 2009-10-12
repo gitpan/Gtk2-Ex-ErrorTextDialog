@@ -1,5 +1,5 @@
-libgtk2-ex-errortextdialog-perl (3-1) unstable; urgency=low
+libgtk2-ex-errortextdialog-perl (4-1) unstable; urgency=low
 
   * Packaged version.
 
- -- Kevin Ryde <user42@zip.com.au>  Mon, 23 Mar 2009 19:13:25 +1100
+ -- Kevin Ryde <user42@zip.com.au>  Sun, 11 Oct 2009 16:11:46 +1100

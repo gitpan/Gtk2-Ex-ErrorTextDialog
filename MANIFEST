@@ -7,15 +7,20 @@ debian/copyright
 debian/rules
 debian/watch
 devel/AddOn-FollowAppend.pm
+devel/devel-loading.pl
 devel/follow.pl
+devel/Foo.pm
+devel/frame.pl
 devel/horiz.pl
+devel/lib/Gtk2/Ex/WindowManagerFrame.pm
+devel/loading.pl
 devel/message-set-text.pl
 devel/message-text-fallback.t
+devel/MyRunawayWarnAndError.pm
 devel/not-safe-etd.pl
 devel/not-safe-raw.pl
 devel/recursive-warn.pl
 devel/run.pl
-devel/RunawayWarnAndError.pm
 devel/save-builder.pl
 devel/save-file.pl
 devel/screenshot.pl
@@ -24,6 +29,8 @@ devel/trace-bytes.pl
 devel/UsingBegin.pm
 devel/version.pl
 examples/simple.pl
+inc/MyMakeMakerExtras.pm
+inc/MyMakeMakerGettext.pm
 lib/Gtk2/Ex/ErrorTextDialog.pm
 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
 lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
@@ -36,10 +43,14 @@ po/header.pot
 po/README
 README
 SIGNATURE
+t/0-META-read.t
+t/0-Test-DistManifest.t
+t/0-Test-Pod.t
 t/ErrorTextDialog.t
 t/FollowAppend.t
 t/Handler.t
-t/pod.t
+t/inc/MyTestHelpers.pm
+t/inc/Test/Weaken/Gtk2.pm
 t/SaveDialog.t
 t/test-weaken.t
 META.yml                                 Module meta-data (added by MakeMaker)

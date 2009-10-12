@@ -16,7 +16,9 @@
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
-package RunawayWarnAndError;
+# loading this deliberately induces a runaway string warning and error
+
+package MyRunawayWarnAndError;
 use 5.010;
 use strict;
 use warnings;

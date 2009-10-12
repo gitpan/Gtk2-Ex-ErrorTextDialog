@@ -21,13 +21,13 @@
 # Usage: ./simple.pl
 #
 # This is the most basic use for the ErrorTextDialog exception handler
-# function, installed to catch main loop errors and Perl warnings (which
-# includes Glib::Log messages turned into Perl warnings by Glib-Perl).
+# function, installed to catch main loop errors and Perl warnings, including
+# Glib::Log messages turned into Perl warnings by Glib-Perl.
 #
 # The two installs at the start of the code is all it usually takes to have
-# ErrorTextDialog in your program.  The rest of the code is just buttons to
-# deliberately induce errors etc, whereas in a real program you do
-# everything possible not to have errors!
+# ErrorTextDialog in your program.  The rest is just buttons to deliberately
+# induce errors etc, whereas in a real program you do everything possible
+# not to have errors!
 #
 
 
@@ -36,14 +36,13 @@ use warnings;
 use Gtk2 '-init';
 use Gtk2::Ex::ErrorTextDialog::Handler;
 
-# the Perl-Glib exception handler runs for errors, ie. otherwise untrapped
-# die() calls, under the main  loop
+# Perl-Glib exception handler runs for errors under the main loop, meaning
+# otherwise untrapped die() calls
 Glib->install_exception_handler
   (\&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler);
 
 # this is a global for all warning messages
-$SIG{'__WARN__'}
-  = \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
+$SIG{'__WARN__'} = \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
 
 #---------------------
 

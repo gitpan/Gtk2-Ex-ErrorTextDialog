@@ -30,6 +30,7 @@ use Gtk2::Ex::ErrorTextDialog;
 use Gtk2::Ex::ErrorTextDialog::Handler;
 
 use FindBin;
+use lib::abs $FindBin::Bin;
 my $progname = $FindBin::Script;
 
 print "$progname: MessageDialog has 'text': ",
@@ -79,7 +80,7 @@ $toplevel->add ($vbox);
 # Gtk2::Ex::ErrorTextDialog->popup;
 
 {
-  my $button = Gtk2::Button->new_with_label ("Add Error Message");
+  my $button = Gtk2::Button->new_with_label ("add_message()");
   $button->signal_connect (clicked => sub {
                              print "$progname: add\n";
                              require Gtk2::Ex::ErrorTextDialog;
@@ -127,8 +128,10 @@ ksdjfksdksdjf s
 {
   my $button = Gtk2::Button->new_with_label ("warn() continuation");
   $button->signal_connect (clicked => sub {
-                             print "$progname: inducing an warning\n";
+                             print "$progname: inducing an warning and continuation\n";
+                             warn "first part of the warning";
                              warn "\t(an extra remark)";
+                             warn "\ta second extra";
                            });
   $vbox->pack_start ($button, 0,0,0);
 }
@@ -200,12 +203,19 @@ ksdjfksdksdjf s
   $vbox->pack_start ($button, 0,0,0);
 }
 {
-  push @INC, $FindBin::Bin;
-  my $button = Gtk2::Button->new_with_label ("load RunawayWarnAndError");
+  my $button = Gtk2::Button->new_with_label ("load MyRunawayWarnAndError.pm");
   $button->signal_connect
     (clicked => sub {
-       print "$progname: loading RunawayWarnAndError\n";
-       require RunawayWarnAndError;
+       print "$progname: loading MyRunawayWarnAndError\n";
+#        local $SIG{'__WARN__'} = sub {
+#          print STDERR "(WARNING):\n";
+#          warn @_;
+#        };
+#        local $SIG{'__DIE__'} = sub {
+#          print STDERR "(DIE):\n";
+#          die @_;
+#        };
+       require MyRunawayWarnAndError;
      });
   $vbox->pack_start ($button, 0,0,0);
 }
@@ -217,7 +227,11 @@ ksdjfksdksdjf s
 #   print "--------------\n$str\n---------------\n";
 #   goto \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
 # };
-$SIG{'__WARN__'} = \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
+# $SIG{'__WARN__'} = \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
+$SIG{'__WARN__'} = sub {
+  print STDERR "__WARN__ handler:\n";
+  goto \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
+};
 
 if (0) {
   my $stacktrace;
@@ -237,9 +251,15 @@ if (0) {
     }
   }
   Glib->install_exception_handler (\&my_exception_handler_with_stacktrace);
-} else {
+} elsif (0) {
   Glib->install_exception_handler
     (\&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler);
+} else {
+  Glib->install_exception_handler
+    (sub {
+       print STDERR "Glib exception handler:\n";
+       goto \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
+     });
 }
 
 
@@ -252,7 +272,7 @@ if (0) {
 #   my $str = ((defined $log_domain ? "$log_domain-" : "** ")
 #              . "\U$log_level\E: "
 #              . (defined $message ? $message : "(no message)"));
-#   $self->add_text ($str);
+#   $self->add_message ($str);
 # }
 
 

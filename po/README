@@ -15,20 +15,22 @@ Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
----------------------------------------------------------------------
 
 
-This is only really a place-holder for possible future translations of
-the few messages in the ErrorTextDialog.
+
+
+This is only a place-holder for possible future translations of the
+few messages in the ErrorTextDialog.
 
 Currently there's nothing translated, and the messages probably aren't
 settled enough to want to put work into translation.
 
 "charset=UTF-8" should be used in all the .po files because that's
-what ErrorTextDialog.pm asks for, to become Perl wide-char strings
+what ErrorTextDialog.pm asks for, becoming Perl wide-char strings
 internally.  A charset other than utf-8 still works, it just means
 gettext must convert at runtime.  The .pot file is all ASCII.
 
 header.pot is the start part of Gtk2-Ex-ErrorTextDialog.pot, put there
-by the generate/update rules in Makefile.PL.  gettext 0.17 doesn't
-doesn't preserve comments in a .pot header very well.
+by the generate rules in the Makefile (per inc/MyMakeMakerGettext.pm).
+gettext 0.17 doesn't doesn't preserve comments in a .pot header very
+well.

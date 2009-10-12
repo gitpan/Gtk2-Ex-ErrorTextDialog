@@ -16,17 +16,17 @@
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# Build-Depends could have "libtest-pod-perl (>= 1.00),
-# libtest-weaken-perl (>= 2.000)" for more tests, but they're optional
-# and just make the build tools drag in more stuff.
+# Build-Depends could have the "maximum_tests" modules from META.yml
+# for more tests, but they're optional author tests really and would
+# just make the build tools drag in more stuff.
 
 Source: libgtk2-ex-errortextdialog-perl
 Section: perl
 Priority: optional
 Build-Depends: cdbs, debhelper (>= 5)
 Maintainer: Kevin Ryde <user42@zip.com.au>
-Standards-Version: 3.8.1
-Homepage: http://www.geocities.com/user42_kevin/gtk2-ex-errortextdialog/index.html
+Standards-Version: 3.8.3
+Homepage: http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html
 Bugs: mailto:user42@zip.com.au
 
 Package: libgtk2-ex-errortextdialog-perl
@@ -36,5 +36,4 @@ Recommends: libintl-xs-perl (>= 1.16)
 Description: Dialog for error messages in a TextView
  Gtk2::Ex::ErrorTextDialog presents error messages to the user in a
  dialog with a TextView widget.  Errors accumulate and you can scroll
- back to see previous ones, cut-and-paste parts, or save them all to a
- file.
+ back to see previous ones, cut-and-paste parts, or save to a file.

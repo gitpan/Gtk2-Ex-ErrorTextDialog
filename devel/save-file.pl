@@ -25,7 +25,7 @@ use Gtk2::Ex::ErrorTextDialog;
 use Gtk2::Ex::ErrorTextDialog::SaveDialog;
 
 my $dialog = Gtk2::Ex::ErrorTextDialog->instance;
-$dialog->add_text("\
+$dialog->add_message("\
 hello
 fdjsk
 fsdjkl
@@ -34,5 +34,5 @@ fsdjkl
 fsdjk fkjsd kfj sdk
 ksdjfksdksdjf s
 ");
-Gtk2::Ex::ErrorTextDialog::SaveDialog::_save_to_filename($dialog,'/tmp/x');
+Gtk2::Ex::ErrorTextDialog::SaveDialog::_save_to_filename($dialog,'/tmp/x.utf8');
 exit 0;
