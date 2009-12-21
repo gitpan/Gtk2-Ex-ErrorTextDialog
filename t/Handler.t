@@ -32,7 +32,7 @@ SKIP: { eval 'use Test::NoWarnings; 1'
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 4;
+my $want_version = 5;
 ok ($Gtk2::Ex::ErrorTextDialog::Handler::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::ErrorTextDialog::Handler->VERSION  >= $want_version,

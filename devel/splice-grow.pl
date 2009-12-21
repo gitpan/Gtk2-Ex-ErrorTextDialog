@@ -1,4 +1,4 @@
-#!/usr/bin/make -f
+#!/usr/bin/perl
 
 # Copyright 2009 Kevin Ryde
 
@@ -17,8 +17,13 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/perlmodule.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
+use strict;
+use warnings;
 
-DEB_INSTALL_EXAMPLES_libgtk2-ex-errortextdialog-perl = examples/*
+my @array = (1 .. 500);;
+my $n = 1000;
+while (1) {
+  push @array, $n++;
+  splice @array, 0, -500, 'truncate';
+  # shift @array;
+}

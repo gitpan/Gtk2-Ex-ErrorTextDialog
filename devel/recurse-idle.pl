@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2007, 2008, 2009 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -17,29 +17,28 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
-use 5.006;
 use strict;
 use warnings;
+use Gtk2 '-init';
+use Gtk2::Ex::ErrorTextDialog;
+use Gtk2::Ex::ErrorTextDialog::Handler;
 
 use FindBin;
+use lib::abs $FindBin::Bin;
 my $progname = $FindBin::Script;
-use lib $FindBin::Bin;
 
-our $in_progress = 0;
-sub hook {
-  my ($self, $filename) = @_;
+$SIG{'__WARN__'} = \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
 
-  print "hook $filename in_progress=$in_progress\n";
-  if ($filename eq 'Foo.pm' && ! $in_progress) {
-    local $in_progress = 1;
-    print "hook require Foo\n";
-    require Foo;
-    print "  done hook require Foo\n";
-  }
-  return;
-}
-unshift @INC, \&hook;
+my $add_message = \&Gtk2::Ex::ErrorTextDialog::add_message;
+no warnings 'redefine';
+*Gtk2::Ex::ErrorTextDialog::add_message = sub {
+  print "$progname: wrapped add_message()\n";
+  &$add_message(@_);
+  die "$progname: inducing die in add_message";
+  # warn "$progname: inducing this warning in add_message";
+};
 
-print "require\n";
-require Foo;
-print "require done\n";
+warn "$progname: look to your orb for the warning";
+
+Gtk2->main;
+exit 0;

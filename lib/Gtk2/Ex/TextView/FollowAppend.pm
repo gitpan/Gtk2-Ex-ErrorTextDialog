@@ -21,7 +21,7 @@ use strict;
 use warnings;
 use Gtk2;
 
-our $VERSION = 4;
+our $VERSION = 5;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -265,12 +265,12 @@ TextView::FollowAppend.  It's the same as
 
 =head1 OTHER NOTES
 
-This is done as a subclass of TextView since that seems the easiest say to
+This is done as a subclass of TextView since that seems the easiest way to
 catch a C<size-allocate> before the new size has been applied, so as to see
 whether the cursor-at-end plus end-visible conditions are met and thus
 end-visible should be forced on the new size.  Because C<size-allocate> is a
-"run first" signal an external signal connection only runs once the new size
-is applied.  Maybe it'd be possible to track end-visible all the time
+C<run-first> signal so an external signal connection only runs once the new
+size is applied.  Maybe it'd be possible to track end-visible all the time
 though, ready for a window resize or contents resize.
 
 =head1 SEE ALSO

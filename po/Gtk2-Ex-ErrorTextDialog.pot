@@ -30,22 +30,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:69
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:97
 msgid "Errors"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:103
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:110
 msgid ""
 "Save the error messages to a file, perhaps to include in a bug report.\n"
 "(Cut and paste works too, but saving may be better for very long messages.)"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:160
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:166
 msgid "An error has occurred"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:161
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:167
 msgid "No errors"
+msgstr ""
+
+#. TRANSLATORS: The code currently assumes this string is 80 chars or less.
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:323
+msgid "[Older messages discarded]"
 msgstr ""
 
 #: lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm:72

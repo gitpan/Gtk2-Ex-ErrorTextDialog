@@ -24,7 +24,7 @@ use Gtk2;
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Gtk2::Ex::ErrorTextDialog; # for TextDomain utf8 setups
 
-our $VERSION = 4;
+our $VERSION = 5;
 
 use constant DEBUG => 0;
 
@@ -111,7 +111,8 @@ sub save {
   my $error_dialog = $self->get_transient_for;
   my $filename = $self->get_filename;
 
-  # Gtk2-Perl 1.200 $chooser->get_filename gives back wide chars
+  # Gtk2-Perl 1.200 $chooser->get_filename gives back wide chars (where it
+  # almost certainly should be bytes)
   if (utf8::is_utf8($filename)) {
     $filename = Glib->filename_from_unicode ($filename);
   }
@@ -119,11 +120,11 @@ sub save {
   _save_to_filename ($error_dialog, $filename);
 }
 
-# The die message here might be an unholy amalgam of filename charset
-# $filename, and locale charset $!.  Such a combination probably occurs in
-# many other libraries too.  You're probably asking for trouble if your
-# filename and locale charsets are different, so leave it as just this
-# simple combination for now.
+# The die() message here might be an unholy amalgam of filename charset
+# $filename, and locale charset $!.  It probably occurs in many other
+# libraries too, and you're probably asking for trouble if your filename and
+# locale charsets are different, so leave it as just this simple combination
+# for now.
 #
 sub _save_to_filename {
   my ($error_dialog, $filename) = @_;
@@ -147,6 +148,8 @@ __END__
 =head1 NAME
 
 Gtk2::Ex::ErrorTextDialog::SaveDialog -- save for ErrorTextDialog
+
+=for test_synopsis my ($errordialog)
 
 =head1 SYNOPSIS
 
@@ -173,9 +176,9 @@ B<This is part of C<Gtk2::Ex::ErrorTextDialog> and really not meant for
 external use.>
 
 A SaveDialog is popped up by the "Save As" button in an ErrorTextDialog.  It
-gets a filename from the user and saves the error text there.  SaveDialog is
-separate for modularity and to slightly reduce the code in the main
-ErrorTextDialog, since a save may be wanted only rarely.
+gets a filename from the user and saves the error text to that file.
+SaveDialog is separate for modularity and to slightly reduce the code in the
+main ErrorTextDialog, because a save may be wanted only rarely.
 
 =head1 FUNCTIONS
 

@@ -68,8 +68,8 @@ HERE
   $ret .= <<'HERE';
 
 pot: $(POT_FILE)
-po: $(PO_FILES)
-mo: $(MO_FILES)
+po: pot $(PO_FILES)
+mo: po $(MO_FILES)
 
 # "--keyword" options needed for 0.17, maybe they'll be builtin in later
 # gettext.

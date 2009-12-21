@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
-
+use 5.008;
 use strict;
 use warnings;
 use Gtk2::Ex::ErrorTextDialog;
@@ -35,14 +35,14 @@ my $have_display = Gtk2->init_check;
 if (! $have_display) {
   plan skip_all => "due to no DISPLAY available";
 }
-plan tests => 14;
+plan tests => 19;
 
 SKIP: { eval 'use Test::NoWarnings; 1'
           or skip 'Test::NoWarnings not available', 1; }
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 4;
+my $want_version = 5;
 ok ($Gtk2::Ex::ErrorTextDialog::VERSION >= $want_version,
     'VERSION variable');
 ok (Gtk2::Ex::ErrorTextDialog->VERSION  >= $want_version,
@@ -141,6 +141,39 @@ diag "Scalar::Util::weaken";
   is ($dialog->get_text, '', 'get_text() when empty');
   $dialog->add_message ('hello');
   is ($dialog->get_text, "hello\n", 'get_text() of some text');
+  $dialog->destroy;
+}
+
+#-----------------------------------------------------------------------------
+# action signals
+
+{
+  my $dialog = Gtk2::Ex::ErrorTextDialog->new;
+  my $textbuf = $dialog->{'textbuf'};
+
+  my ($find_popup) = grep {$_->{'signal_name'} eq 'popup-save-dialog'}
+    Glib::Type->list_signals ('Gtk2::Ex::ErrorTextDialog');
+  ok ($find_popup, 'have "popup-save-dialog" signal');
+  if ($find_popup) {
+    diag "$find_popup->{'signal_name'} $find_popup->{'signal_id'} $find_popup->{'itype'} $find_popup->{'signal_flags'}";
+  }
+
+  $dialog->add_message ('hello');
+  my $saw_popup = 0;
+  $dialog->signal_connect (popup_save_dialog => sub { $saw_popup = 1 });
+  { local $SIG{'__WARN__'} = \&MyTestHelpers::warn_suppress_gtk_icon;
+    $dialog->popup_save_dialog;
+  }
+  is ($saw_popup, 1, 'popup_save_dialog() emits "popup-save-dialog"');
+  isnt ($textbuf->get_char_count, 0, 'popup - textbuf still has message');
+
+  $dialog->add_message ('hello');
+  my $saw_clear = 0;
+  $dialog->signal_connect (clear => sub { $saw_clear = 1 });
+  $dialog->clear;
+  is ($saw_clear, 1, 'clear() emits "clear"');
+  is ($textbuf->get_char_count, 0, 'clear - textbuf now empty');
+
   $dialog->destroy;
 }
 

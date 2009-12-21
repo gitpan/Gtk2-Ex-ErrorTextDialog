@@ -21,8 +21,16 @@ use strict;
 use warnings;
 
 BEGIN {
+  $ENV{'LANG'} = 'ja_JP.utf8';
+  $ENV{'LC_ALL'} = 'ja_JP.utf8';
+  delete $ENV{'LANGUAGE'};
+
   $ENV{'LANG'} = 'de_DE';
+  $ENV{'LC_ALL'} = 'de_DE';
   $ENV{'LANGUAGE'} = 'de';
+
+  require POSIX;
+  print "setlocale to ",POSIX::setlocale(POSIX::LC_ALL(),""),"\n";
 }
 
 use Gtk2;
@@ -34,25 +42,30 @@ use lib::abs $FindBin::Bin;
 my $progname = $FindBin::Script;
 
 print "$progname: MessageDialog has 'text': ",
-  Gtk2::MessageDialog->find_property('XXXXXtext')?"yes":"no","\n";
+  Gtk2::MessageDialog->find_property('text')?"yes":"no","\n";
 
 print "$progname: STDERR prints wide ",
   (Gtk2::Ex::ErrorTextDialog::Handler::_fh_prints_wide('STDERR')
    ? "yes" : "no"), "\n";
 
-require Encode;
-require I18N::Langinfo;
-my $charset = I18N::Langinfo::langinfo (I18N::Langinfo::CODESET());
-{ no warnings 'once';
-  local $PerlIO::encoding::fallback = Encode::PERLQQ; # \x{1234} style
-  (binmode (STDOUT, ":encoding($charset)") &&
-   binmode (STDERR, ":encoding($charset)"))
-    or die "Cannot set :encoding on stdout/stderr: $!\n";
+{
+  require Encode;
+  require I18N::Langinfo;
+  my $charset = I18N::Langinfo::langinfo (I18N::Langinfo::CODESET());
+  { no warnings 'once';
+    local $PerlIO::encoding::fallback = Encode::PERLQQ; # \x{1234} style
+    (binmode (STDOUT, ":encoding($charset)") &&
+     binmode (STDERR, ":encoding($charset)"))
+      or die "Cannot set :encoding on stdout/stderr: $!\n";
+  }
 }
 
 print "$progname: STDERR prints wide ",
   (Gtk2::Ex::ErrorTextDialog::Handler::_fh_prints_wide('STDERR')
    ? "yes" : "no"), "\n";
+
+print "$progname: _locale_charset_or_ascii() is ",
+  Gtk2::Ex::ErrorTextDialog::Handler::_locale_charset_or_ascii(), "\n";
 
 {
   require Locale::Messages;
@@ -119,10 +132,11 @@ ksdjfksdksdjf s
 }
 {
   my $button = Gtk2::Button->new_with_label ("warn() message");
-  $button->signal_connect (clicked => sub {
-                             print "$progname: inducing an warning\n";
-                             warn "some sort of perl warning";
-                           });
+  $button->signal_connect
+    (clicked => sub {
+       print "$progname: inducing an warning\n";
+       warn "some sort of perl warning, utf8 bullet \x{2022} end";
+     });
   $vbox->pack_start ($button, 0,0,0);
 }
 {
@@ -137,10 +151,11 @@ ksdjfksdksdjf s
 }
 {
   my $button = Gtk2::Button->new_with_label ("g_warning()");
-  $button->signal_connect (clicked => sub {
-                             print "$progname: calling g_warning\n";
-                             Glib->warning (undef, 'warning about something');
-                           });
+  $button->signal_connect
+    (clicked => sub {
+       print "$progname: calling g_warning\n";
+       Glib->warning (undef, "warning about something, utf8 bullet \x{2022} end");
+     });
   $vbox->pack_start ($button, 0,0,0);
 }
 {
@@ -191,10 +206,11 @@ ksdjfksdksdjf s
     return $self;
   }
   sub DESTROY {
-    warn "A warning from MyGlobalDestructionBadObject";
+    warn "$progname: warning within MyGlobalDestructionBadObject DESTROY";
   }
   package main;
-  my $button = Gtk2::Button->new_with_label ("induce global destruction\nerror on exit");
+  my $button = Gtk2::Button->new_with_label
+    ("induce global destruction\nerror on exit");
   $button->signal_connect
     (clicked => sub {
        MyGlobalDestructionBadObject->new;
@@ -219,6 +235,26 @@ ksdjfksdksdjf s
      });
   $vbox->pack_start ($button, 0,0,0);
 }
+{
+  my $button = Gtk2::Button->new_with_label ("emit 'clear' signal");
+  my $id;
+  $button->signal_connect
+    (clicked => sub {
+       my $dialog = Gtk2::Ex::ErrorTextDialog->instance;
+       $id ||= $dialog->signal_connect (clear => sub {
+                                          print "$progname: clear signal\n";
+                                        });
+       $dialog->signal_emit('clear');
+     });
+  $vbox->pack_start ($button, 0,0,0);
+}
+
+
+$SIG{'__WARN__'} = sub {
+  print STDERR "$progname __WARN__ handler:\n";
+  print STDERR "  utf8 ",utf8::is_utf8($_[0])?"yes":"no","\n";
+  goto \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
+};
 
 # $SIG{'__WARN__'} = sub {
 #   require Devel::StackTrace;
@@ -228,10 +264,6 @@ ksdjfksdksdjf s
 #   goto \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
 # };
 # $SIG{'__WARN__'} = \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
-$SIG{'__WARN__'} = sub {
-  print STDERR "__WARN__ handler:\n";
-  goto \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
-};
 
 if (0) {
   my $stacktrace;

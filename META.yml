@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Gtk2-Ex-ErrorTextDialog
-version:            4
+version:            5
 abstract:           Dialog showing error messages in a TextView.
 author:
     - Kevin Ryde <user42@zip.com.au>
@@ -14,12 +14,12 @@ requires:
     Devel::GlobalDestruction:  0
     Glib:                 0
     Glib::Ex::SignalIds:  0
-    Glib::Ex::SourceIds:  0
     Glib::Object::Subclass:  0
     Gtk2:                 0
-    Gtk2::Pango:          0
+    Gtk2::Ex::Units:      14
     Locale::Messages:     0
     Locale::TextDomain:   1.16
+    perl:                 5.008001
 resources:
     homepage:  http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html
     license:   http://www.gnu.org/licenses/gpl.html
@@ -27,6 +27,8 @@ no_index:
     directory:
         - t
         - inc
+        - devel
+        - examples
 generated_by:       ExtUtils::MakeMaker version 6.55_02
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -36,20 +38,21 @@ optional_features:
         description:  Stuff used variously for development.
         requires:
             Devel::Loading:  0
+            Gtk2::Pango:     0
             lib::abs:        0
-    maximum_examples:
-        description:  Be able to run all the examples programs.
-        requires:
-            Test::Weaken:  3
+            Scalar::Lazy:    0
+            X11::Protocol:   0
     maximum_tests:
         description:  Have "make test" do as much as possible.
         requires:
-            File::Spec:          0
-            FindBin:             0
+            Devel::FindRef:      0
             Parse::CPAN::Meta:   0
             Test::DistManifest:  0
             Test::NoWarnings:    0
             Test::Pod:           1.00
+            Test::Synopsis:      0
+            Test::Weaken:        3
+            Test::YAML::Meta:    0.13
             YAML:                0
             YAML::Syck:          0
             YAML::Tiny:          0

@@ -21,11 +21,14 @@ use 5.008001; # for utf8::is_utf8()
 use strict;
 use warnings;
 use Gtk2;
-use Locale::TextDomain 1.16; # for bind_textdomain_filter()
+use List::Util 'max';
+use Locale::TextDomain 1.16; # version 1.16 for bind_textdomain_filter()
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Locale::Messages;
+use POSIX ();
+use Gtk2::Ex::Units 14; # version 14 for char_width
 
-our $VERSION = 4;
+our $VERSION = 5;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -36,12 +39,37 @@ Locale::Messages::bind_textdomain_filter  ('Gtk2-Ex-ErrorTextDialog',
 
 use Glib::Object::Subclass
   'Gtk2::MessageDialog',
-  signals => { destroy => \&_do_destroy };
+  signals => { clear
+               => { param_types => [],
+                    return_type => undef,
+                    class_closure => \&_do_clear,
+                    flags => ['run-last','action'] },
+               popup_save_dialog
+               => { param_types => [],
+                    return_type => undef,
+                    class_closure => \&_do_popup_save_dialog,
+                    flags => ['run-last','action'] },
+               destroy => \&_do_destroy,
+             },
 
-use constant { RESPONSE_CLEAR   => 0,
-               RESPONSE_SAVE    => 1,
+  properties => [ Glib::ParamSpec->int
+                  ('max-chars',
+                   'max-chars',
+                   'Maximum number of characters to retain, or -1 for unlimited.',
+                   -1,                 # minimum
+                   POSIX::INT_MAX(),   # maximum
+                   200_000,            # default
+                   Glib::G_PARAM_READWRITE) ];
 
-               MESSAGE_SEPARATOR => "-----\n" };
+use constant {
+              # not yet documented
+              _RESPONSE_CLEAR   => 0,
+              _RESPONSE_SAVE    => 1,
+              # _NEXT_RESPONSE    => 2,
+
+              # not yet documented ...
+              _MESSAGE_SEPARATOR => "--------\n",
+             };
 
 my $instance;
 our @_instance_pending;
@@ -72,40 +100,18 @@ sub INIT_INSTANCE {
     }
     $self->set_title ($title);
   }
-
   $self->set (message_type => 'error',
               resizable => 1);
 
-  #   {
-  #     my $nopopup = $self->{'nopopup'}
-  #       = Gtk2::CheckButton->new_with_mnemonic (__('_No Popup'));
-  #     if ($nopopup->can('set_tooltip_text')) {
-  #       # new style of Gtk 2.12
-  #       $nopopup->set_tooltip_text
-  #         (__('Check this to not popup automatically.
-  # Messages are recorded, but the dialog is not popped up.
-  # This is good to ignore a cascade of errors.'));
-  #     }
-  #     $self->action_area->pack_start ($nopopup, 0,0,0);
-  #
-  #     if ($nopopup->can('set_tooltip_text')) { # new in Gtk 2.12
-  #       $nopopup->set_tooltip_text
-  #         (__('Check this to not popup automatically.
-  # Messages are recorded, but the dialog is not popped up.
-  # This is good to ignore a cascade of errors.'));
-  #     }
-  #   }
-
   {
-    my $save = $self->add_button ('gtk-save-as', RESPONSE_SAVE);
-    if ($save->can('set_tooltip_text')) { # new in Gtk 2.12
-      $save->set_tooltip_text
+    my $button = $self->add_button ('gtk-save-as', _RESPONSE_SAVE);
+    if ($button->can('set_tooltip_text')) { # new in Gtk 2.12
+      $button->set_tooltip_text
         (__('Save the error messages to a file, perhaps to include in a bug report.
 (Cut and paste works too, but saving may be better for very long messages.)'));
     }
   }
-
-  $self->add_buttons ('gtk-clear' => RESPONSE_CLEAR,
+  $self->add_buttons ('gtk-clear' => _RESPONSE_CLEAR,
                       'gtk-close' => 'close');
 
   # connect to self instead of a class handler because as of Gtk2-Perl 1.220
@@ -159,7 +165,7 @@ sub _do_textbuf_changed {
   _message_dialog_set_text ($self, $any_errors
                             ? __('An error has occurred')
                             : __('No errors'));
-  $self->set_response_sensitive (RESPONSE_CLEAR, $any_errors);
+  $self->set_response_sensitive (_RESPONSE_CLEAR, $any_errors);
 }
 
 # set_default_size() based on desired size_request() with a sensible rows
@@ -169,30 +175,18 @@ sub _do_textbuf_changed {
 #
 # not documented yet ...
 sub set_default_size_chars {
-  my ($self, $width_chars, $height_chars) = @_;
+  my ($self, $width_chars, $height_lines) = @_;
   my $textview = $self->{'textview'};
   my $scrolled = $textview->get_parent;
-  require Gtk2::Pango;
-  my $context = $textview->get_pango_context;
-  my $font_desc = $textview->style->font_desc;
-  my $metrics = $context->get_metrics ($font_desc, $context->get_language);
-  my $char_width_pixels = $metrics->get_approximate_char_width
-    / Gtk2::Pango::PANGO_SCALE();
-  my $line_height_pixels = ($metrics->get_ascent + $metrics->get_descent)
-    / Gtk2::Pango::PANGO_SCALE();
 
-  # Width on textview so the vertical scrollbar is added on top, but height
-  # on the scrolled since the scrollbar means any desired height from the
-  # textview is ignored.  Fractions of a pixel get rounded in the calls.
+  # Width set on textview so the vertical scrollbar is added on top.  But
+  # height set on the scrolled since its vertical scrollbar means any
+  # desired height from the textview is ignored.
   #
-  $textview->set_size_request ($width_chars * $char_width_pixels, -1);
-  $scrolled->set_size_request (-1, $height_chars * $line_height_pixels);
-
-  my $req = $self->size_request;
-  $scrolled->set_size_request (-1, -1);
-  $textview->set_size_request (-1, -1);
-
-  $self->set_default_size ($req->width, $req->height);
+  Gtk2::Ex::Units::set_default_size_with_subsizes
+      ($self,
+       [ $scrolled, -1, $height_lines*Gtk2::Ex::Units::line_height($textview)],
+       [ $textview, "$width_chars chars", -1 ]);
 }
 
 #-----------------------------------------------------------------------------
@@ -200,10 +194,10 @@ sub set_default_size_chars {
 
 sub _do_response {
   my ($self, $response) = @_;
-  if ($response eq RESPONSE_CLEAR) {
+  if ($response eq _RESPONSE_CLEAR) {
     $self->clear;
 
-  } elsif ($response eq RESPONSE_SAVE) {
+  } elsif ($response eq _RESPONSE_SAVE) {
     $self->popup_save_dialog;
 
   } elsif ($response eq 'close') {
@@ -215,16 +209,26 @@ sub _do_response {
 
 sub clear {
   my ($self) = @_;
-  ref $self or $self = $self->instance;
+  $self = $self->instance unless ref $self;
+  $self->signal_emit ('clear');
+}
+sub _do_clear {
+  my ($self) = @_;
   my $textbuf = $self->{'textbuf'};
   $textbuf->delete ($textbuf->get_start_iter, $textbuf->get_end_iter);
 }
 
 sub popup_save_dialog {
   my ($self) = @_;
-  ref $self or $self = $self->instance;
+  $self = $self->instance unless ref $self;
+  $self->signal_emit ('popup-save-dialog');
+}
+sub _do_popup_save_dialog {
+  my ($self) = @_;
   $self->_save_dialog->present;
 }
+
+# create and return the save dialog -- might make this public one day
 sub _save_dialog {
   my ($self) = @_;
   return ($self->{'save_dialog'} ||= do {
@@ -248,15 +252,21 @@ sub get_text {
 sub add_message {
   my ($self, $msg) = @_;
   if (DEBUG) { print "add_message()\n"; }
-  ref $self or $self = $self->instance;
+  $self = $self->instance unless ref $self;
 
   require Gtk2::Ex::ErrorTextDialog::Handler;
   my $textbuf = $self->{'textbuf'};
   my @msgs;
 
   if ($self->_is_instance && @_instance_pending) {
-    if (DEBUG) { print "  ", scalar @_instance_pending, " pending\n"; }
-    foreach my $pending (@_instance_pending) {
+    if (DEBUG) { print "  ", scalar(@_instance_pending), " pending\n"; }
+
+    # copy the global in case some warning from the code here extending it,
+    # making an infinite loop
+    @msgs = @_instance_pending;
+    @_instance_pending = ();
+
+    foreach my $pending (@msgs) {
       $pending = Gtk2::Ex::ErrorTextDialog::Handler::_maybe_locale_bytes_to_wide ($pending);
       if ($pending !~ /\n$/) { $pending .= "\n"; }
     }
@@ -264,18 +274,20 @@ sub add_message {
     # Various internal Perl_warn() and Perl_warner() calls have the warning
     # followed immediately by a second warn call with an extra remark about
     # what might be wrong.  The extras begin with a tab, join them up to the
-    # initial warning, instead of making a separate message.  Do this after
-    # bytes->wide, for the unlikely chance one is wide and the other bytes.
+    # initial warning instead of a separate message.  Do this after
+    # bytes->wide crunch, just in case one is wide and the other bytes.
     #
-    for (my $i = 0; $i < $#_instance_pending; ) {
-      if ($_instance_pending[$i+1] =~ /^\t/) {
-        $_instance_pending[$i] .= splice @_instance_pending, $i+1, 1;
+    # The initial message and any continuations are always in
+    # @_instance_pending together, because the idle handler deferring lets
+    # the continuation go through $SIG{__WARN__} before the code here runs.
+    #
+    for (my $i = 0; $i < $#msgs; ) {
+      if ($msgs[$i+1] =~ /^\t/) {
+        $msgs[$i] .= splice @msgs, $i+1, 1;
       } else {
         $i++;
       }
     }
-    push @msgs, @_instance_pending;
-    @_instance_pending = ();
   }
 
   if (defined $msg) {
@@ -284,15 +296,36 @@ sub add_message {
     push @msgs, $msg;
   }
 
-  # can have no messages under an idle handler if @_instance_pending has
-  # already been crunched by an explicit add_message() call
+  # can have no messages here if the idle handler for @_instance_pending
+  # runs after that array has been crunched by an explicit add_message()
+  # call
   if (@msgs) {
     if ($textbuf->get_char_count) {
       unshift @msgs, ''; # want separator after existing textbuf text
     }
-    my $text = join (MESSAGE_SEPARATOR, @msgs);
+    my $text = join (_MESSAGE_SEPARATOR, @msgs);
     $textbuf->insert ($textbuf->get_end_iter, $text);
+    _truncate ($self);
   }
+}
+
+sub _truncate {
+  my ($self) = @_;
+  my $max_chars = $self->get('max-chars');
+  return if ($max_chars == -1);
+
+  my $textbuf = $self->{'textbuf'};
+  my $len = $textbuf->get_char_count;
+  # extra 82 for $discard_message, possibly translated, and "\n\n"
+  return if ($len <= $max_chars + 82);
+
+  # TRANSLATORS: The code currently assumes this string is 80 chars or less.
+  my $discard_message = __('[Older messages discarded]');
+
+  $textbuf->delete ($textbuf->get_start_iter,
+                    $textbuf->get_iter_at_offset ($len - $max_chars));
+  $textbuf->insert ($textbuf->get_start_iter,
+                    "$discard_message\n\n");
 }
 
 # not sure about this yet ...
@@ -321,7 +354,7 @@ sub popup_add_message {
 # not documented yet ...
 sub popup {
   my ($self, $parent) = @_;
-  ref $self or $self = $self->instance;
+  $self = $self->instance unless ref $self;
 
   # if ($self->{'nopopup'}->get_active) { return; }
 
@@ -364,27 +397,14 @@ sub _log_to_string {
 #-----------------------------------------------------------------------------
 # generic helpers
 
-# append a newline to $textbuf if it's non-empty and doesn't already end
-# with a newline
-# sub _textbuf_ensure_final_newline {
-#   my ($textbuf) = @_;
-#   my $len = $textbuf->get_char_count || return;  # nothing added if empty
-# 
-#   my $end_iter = $textbuf->get_end_iter;
-#   if ($textbuf->get_text ($textbuf->get_iter_at_offset($len-1),
-#                           $end_iter,
-#                           0) # without invisible text
-#       ne "\n") {
-#     $textbuf->insert ($end_iter, "\n");
-#   }
-# }
-
 # _message_dialog_set_text() sets the text part of a Gtk2::MessageDialog.
 # Gtk 2.10 up has this as a 'text' property, or in past versions it's
 # necessary to dig out the label child widget.
 #
-# Gtk2::Label doesn't have a 'text' property, and Gtk2::MessageDialog
-# doesn't have a set_text() method, so the two sets have to be different.
+# It doesn't work to choose between the dialog or sub-widget and to make a
+# set() or set_text() call on.  Gtk2::MessageDialog doesn't have a
+# set_text() method, and Gtk2::Label doesn't have a 'text' property, so must
+# have separate code for the old or new gtk.
 #
 # This is in a BEGIN block so the unused sub is garbage collected.
 #
@@ -417,6 +437,65 @@ BEGIN {
 
 1;
 __END__
+
+# Unused stuff:
+
+  #   {
+  #     my $nopopup = $self->{'nopopup'}
+  #       = Gtk2::CheckButton->new_with_mnemonic (__('_No Popup'));
+  #     if ($nopopup->can('set_tooltip_text')) {
+  #       # new style of Gtk 2.12
+  #       $nopopup->set_tooltip_text
+  #         (__('Check this to not popup automatically.
+  # Messages are recorded, but the dialog is not popped up.
+  # This is good to ignore a cascade of errors.'));
+  #     }
+  #     $self->action_area->pack_start ($nopopup, 0,0,0);
+  #
+  #     if ($nopopup->can('set_tooltip_text')) { # new in Gtk 2.12
+  #       $nopopup->set_tooltip_text
+  #         (__('Check this to not popup automatically.
+  # Messages are recorded, but the dialog is not popped up.
+  # This is good to ignore a cascade of errors.'));
+  #     }
+  #   }
+
+# Truncating on a message boundary ...
+#
+#   my $str = $textbuf->get('text');
+#   my $from = length($str) - $max_chars;
+# 
+#   # if $from is in the middle or just after a separator then that's the
+#   # place to truncate; step back by length(_MESSAGE_SEPARATOR) to allow that
+#   # to match
+#   my $pos = index ($str, _MESSAGE_SEPARATOR,
+#                    max (0, $from - length(_MESSAGE_SEPARATOR)));
+#   if ($pos < 0) {
+#     # $from is somewhere within some huge last message in the buffer, search
+#     # backwards to the separator preceding it
+#     $pos = rindex ($str, _MESSAGE_SEPARATOR, max (0, $from));
+#     return if $pos < 0;  # only one message
+#   }
+# 
+#   $pos += length(_MESSAGE_SEPARATOR);
+#   $textbuf->delete ($textbuf->get_start_iter,
+#                     $textbuf->get_iter_at_offset($pos));
+
+# append a newline to $textbuf if it's non-empty and doesn't already end
+# with a newline
+# sub _textbuf_ensure_final_newline {
+#   my ($textbuf) = @_;
+#   my $len = $textbuf->get_char_count || return;  # nothing added if empty
+# 
+#   my $end_iter = $textbuf->get_end_iter;
+#   if ($textbuf->get_text ($textbuf->get_iter_at_offset($len-1),
+#                           $end_iter,
+#                           0) # without invisible text
+#       ne "\n") {
+#     $textbuf->insert ($end_iter, "\n");
+#   }
+# }
+
 
 =head1 NAME
 
@@ -466,15 +545,14 @@ operations.
     |              Clear  Save-As  Close |
     +------------------------------------+
 
-L<C<Gtk2::Ex::ErrorTextDialog::Handler>|Gtk2::Ex::ErrorTextDialog::Handler>
-has functions designed to hook up Glib exceptions and Perl warnings to
-display in an ErrorTextDialog.
+See L<Gtk2::Ex::ErrorTextDialog::Handler> for functions hooking up Glib
+exceptions and Perl warnings to display in an ErrorTextDialog.
 
 ErrorTextDialog is good if there might be a long cascade of messages from
 one problem, or errors repeated on every screen draw.  In that case the
 dialog scrolls along but the app might still mostly work.
 
-The Save-As button lets the user save the messages to a file, for example
+The Save-As button lets the user write the messages to a file, for example
 for a bug report.  Cut-and-paste works in the usual way too.
 
 =head1 FUNCTIONS
@@ -495,18 +573,18 @@ way if you want.  A subsequent call to C<instance> creates a new one.
 =item C<< $errordialog = Gtk2::Ex::ErrorTextDialog->new (key=>value,...) >>
 
 Create and return a new ErrorTextDialog.  Optional key/value pairs set
-initial properties as per C<< Glib::Object->new >>.  An ErrorTextDialog
-created this way is separate from the C<instance()> one above.  But it's
-unusual to want more than one error dialog.
+initial properties per C<< Glib::Object->new >>.  An ErrorTextDialog created
+this way is separate from the C<instance()> one above.  But it's unusual to
+want more than one error dialog.
 
 =back
 
 =head2 Messages
 
-ErrorTextDialog works with "messages", which are simply strings.  A
-horizontal separator line is added between each message, since it can be
-hard to tell one from the next when long lines are word-wrapped.  Currently
-the separator is just some dashes, but something slimmer might be possible.
+ErrorTextDialog works with string messages.  A horizontal separator line is
+added between each message because it can be hard to tell one from the next
+when long lines are wrapped.  Currently the separator is just some dashes,
+but something slimmer might be possible.
 
 =over 4
 
@@ -514,38 +592,88 @@ the separator is just some dashes, but something slimmer might be possible.
 
 =item C<< $errordialog->add_message ($str) >>
 
-Add a message to the ErrorTextDialog.  C<$str> can be either Perl wide chars
-or raw bytes, and it doesn't have to end with a newline.
+Add a message to the ErrorTextDialog.  C<$str> can be Perl wide chars or raw
+bytes and doesn't have to end with a newline.
 
 If C<$str> is raw bytes it's assumed to be in the locale charset and is
 converted to unicode for display.  Anything invalid in C<$str> is escaped,
 currently just in C<PERLQQ> style so it will display, though not necessarily
 very well (see L<Encode/Handling Malformed Data>).
 
-=item C<< Gtk2::Ex::ErrorTextDialog->get_text() >>
+=item C<< $str = Gtk2::Ex::ErrorTextDialog->get_text() >>
 
-=item C<< $errordialog->get_text() >>
+=item C<< $str = $errordialog->get_text() >>
 
 Return a wide-char string of all the messages in the ErrorTextDialog.
 
 =back
 
-=head2 Actions
+=head1 ACTION SIGNALS
+
+The following are provided as "action signals" for use from C<Gtk2::Rc> key
+bindings, and methods for use from program code.
 
 =over 4
 
-=item C<< Gtk2::Ex::ErrorTextDialog->clear() >>
-
-=item C<< $errordialog->clear() >>
+=item C<clear> action signal (no parameters)
 
 Remove all messages from the dialog.  This is the "Clear" button action.
 
-=item C<< Gtk2::Ex::ErrorTextDialog->popup_save_dialog() >>
-
-=item C<< $errordialog->popup_save_dialog() >>
+=item C<popup-save-dialog> action signal (no parameters)
 
 Popup the Save dialog, which asks the user for a filename to save the error
 messages to.  This is the "Save As" button action.
+
+=item C<< Gtk2::Ex::ErrorTextDialog->clear() >>
+
+=item C<< Gtk2::Ex::ErrorTextDialog->popup_save_dialog() >>
+
+=item C<< $errordialog->clear() >>
+
+=item C<< $errordialog->popup_save_dialog() >>
+
+Emit the C<clear> or C<popup-save-dialog> signals, respectively.  The
+default handler in the signals does the actual work of clearing or showing
+the save dialog and as usual for action signals that's the place to override
+or specialize in a subclass.
+
+=back
+
+=head2 Key Bindings
+
+The stock Clear and Save-As button mnemonic keys invoke the clear and save
+actions, but there's no further key bindings by default.  You can add keys
+in the usual way from the C<Gtk2::Rc> mechanism.  The class name is
+C<Gtk2__Ex__ErrorTextDialog> so for example in your F<~/.gtkrc-2.0>
+
+    binding "my_error_keys" {
+      bind "F5" { "popup-save-dialog" () }
+    }
+    class "Gtk2__Ex__ErrorTextDialog" binding:rc "my_error_keys"
+
+See F<examples/keybindings.pl> in the sources for a complete program doing
+this.
+
+=head1 PROPERTIES
+
+=over 4
+
+=item C<max-chars> (integer, default 200000)
+
+The maximum number of characters of message text to retain, or -1 for
+unlimited.  If this size is exceeded old text is discarded, replaced by a
+line
+
+    [Older messages discarded]
+
+to show it's been truncated.  The idea is to limit memory use if a program
+is spewing out lots of warnings etc.  An infinite or near-infinite stream
+probably makes the program unusable, but at least it won't consume ever more
+memory.
+
+Currently truncation chops off old text in the middle of a message.  This is
+slightly unattractive but it's fastest and it means if there's a huge
+message then at least the last part of it is retained.
 
 =back
 
@@ -553,7 +681,7 @@ messages to.  This is the "Save As" button action.
 
 L<Gtk2::Ex::ErrorTextDialog::Handler>
 
-L<Gtk2::Ex::Carp> (which presents messages one at a time)
+L<Gtk2::Ex::Carp>, which presents messages one at a time.
 
 =head1 HOME PAGE
 

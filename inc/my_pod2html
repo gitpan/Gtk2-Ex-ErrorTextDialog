@@ -1,0 +1,64 @@
+#!/usr/bin/perl
+
+# my_pod2html -- convert POD to HTML, with some mangling
+
+# Copyright 2009 Kevin Ryde
+
+# my_pod2html is shared by several distributions.
+#
+# my_pod2html is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 3, or (at your option) any later
+# version.
+#
+# my_pod2html is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+use strict;
+use warnings;
+
+MyPod2HTML->parse_from_file(@ARGV);
+exit 0;
+
+
+package MyPod2HTML;
+use base 'Pod::Simple::HTML';
+
+our $VERSION = 1;
+
+sub do_pod_link {
+  my($self, $link) = @_;
+  my $to = $link->attr('to');
+
+  if ($to eq 'AptPkg') {
+    return 'http://packages.debian.org/libapt-pkg-perl';
+  }
+  if ($to eq 'apt-file') {
+    return 'http://packages.debian.org/apt-file';
+  }
+
+  if ($to =~ /^Glib::Ex::(SourceIds|SignalIds|FreezeNotify|TieProperties)/) {
+    return "http://user42.tuxfamily.org/glib-ex-objectbits/$1.html";
+  }
+  if ($to eq 'Gtk2::Ex::WidgetCursor') {
+    return "http://user42.tuxfamily.org/glib-ex-widgetcursor/WidgetCursor.html";
+  }
+  if ($to eq 'Tie::TZ') {
+    return 'http://user42.tuxfamily.org/tie-tz/TZ.html';
+  }
+  if ($to eq 'Time::TZ') {
+    return 'http://user42.tuxfamily.org/tie-tz/Time-TZ.html';
+  }
+
+  if ($to =~ /^(Glib|Gtk2)($|::(?!Ex::))/) {
+    $to =~ s{::}{/};
+    return "http://gtk2-perl.sourceforge.net/doc/pod/$to.html"
+  }
+    
+  return $self->SUPER::do_pod_link($link);
+}

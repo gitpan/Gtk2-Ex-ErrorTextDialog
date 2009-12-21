@@ -17,9 +17,14 @@ with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 5, December 2009
+    - new max-chars property limiting textbuf size
+    - new action signals for clear and popup-save-dialog
+    - protect against repeated errors from idle handler itself
+
 Version 4, October 2009
-    - Glib idle deferring dialog creation to support messages while a
-      perl compile error is pending
+    - support messages during perl "compile error" by using a Glib
+      idle to defer dialog loading
 
 Version 3, March 2009
     - during "global destruction" only print to STDERR

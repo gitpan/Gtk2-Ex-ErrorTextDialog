@@ -95,6 +95,7 @@ diag "on new() ErrorTextDialog";
     ({ constructor => sub {
          my $dialog = Gtk2::Ex::ErrorTextDialog->new;
          $dialog->realize;
+         MyTestHelpers::main_iterations ();
          return $dialog;
        },
        destructor => \&Test::Weaken::Gtk2::destructor_destroy,
@@ -113,6 +114,7 @@ diag "on instance() ErrorTextDialog";
     ({ constructor => sub {
          my $dialog = Gtk2::Ex::ErrorTextDialog->instance;
          $dialog->realize;
+         MyTestHelpers::main_iterations ();
          return $dialog;
        },
        destructor => \&Test::Weaken::Gtk2::destructor_destroy,
@@ -135,9 +137,11 @@ diag "on instance() ErrorTextDialog";
          };
          $error_dialog->present;
          $save_dialog->present;
+         MyTestHelpers::main_iterations ();
          return [ $error_dialog, $save_dialog ];
        },
-       # save dialog is destroy-with-parent, so just destroy it
+       # $save_dialog is destroy-with-parent, so destructor only on
+       # $error_dialog
        destructor => \&Test::Weaken::Gtk2::destructor_destroy,
        contents => \&Test::Weaken::Gtk2::contents_container,
      });

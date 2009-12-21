@@ -33,6 +33,7 @@ MyMakeMakerExtras::WriteMakefile
    AUTHOR       => 'Kevin Ryde <user42@zip.com.au>',
    LICENSE      => 'gpl',
    SIGN         => 1,
+   MIN_PERL_VERSION => '5.008001',
 
    PREREQ_PM    => {
                     'Devel::GlobalDestruction' => 0,
@@ -44,11 +45,11 @@ MyMakeMakerExtras::WriteMakefile
 
                     # my ObjectBits
                     'Glib::Ex::SignalIds' => 0,
-                    'Glib::Ex::SourceIds' => 0,
 
                     'Gtk2' => 0,
-                    # part of Gtk2, but name it here since used directly
-                    'Gtk2::Pango' => 0,
+
+                    # my WidgetBits
+                    'Gtk2::Ex::Units' => 14,
 
                     # version 1.16 for bind_textdomain_filter() to mung
                     # gettext strings
@@ -66,20 +67,21 @@ MyMakeMakerExtras::WriteMakefile
              => 'http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html',
            },
         optional_features
-        => { maximum_examples
-             => { description => 'Be able to run all the examples programs.',
-                  requires => { 'Test::Weaken' => 3,
-                              },
-                },
-             maximum_tests
+        => { maximum_tests
              => { description => 'Have "make test" do as much as possible.',
                   requires => { 'Test::NoWarnings' => 0,
+                                'Test::Weaken' => 3,
+                                'Devel::FindRef' => 0,
                               },
                 },
              maximum_devel
              => { description => 'Stuff used variously for development.',
                   requires => { 'Devel::Loading' => 0,
                                 'lib::abs' => 0,
+                                'Scalar::Lazy' => 0,
+                                'X11::Protocol' => 0,
+                                # part of Gtk2, but name it since used directly
+                                'Gtk2::Pango' => 0,
                               },
                 },
            },

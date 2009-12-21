@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
+use 5.008;
 use strict;
 use warnings;
 use Gtk2::Ex::ErrorTextDialog;
@@ -30,6 +31,7 @@ BEGIN {
   $xx = sub { 'foo' };
 }
 print "xx $xx\n";
+require Scalar::Util;
 Scalar::Util::weaken ($xx);
 print "xx $xx\n";
 
