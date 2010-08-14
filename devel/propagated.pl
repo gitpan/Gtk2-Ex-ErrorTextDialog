@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -17,14 +17,12 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
-use 5.005;
 use strict;
 use warnings;
 
-my @array = (1 .. 500);
-my $n = 1000;
-while (1) {
-  push @array, $n++;
-  splice @array, 0, -500, 'truncate';
-  # shift @array;
-}
+eval { die 'an error' };
+$SIG{'__DIE__'} = sub {
+  my ($str) = @_;
+  print "die: $str\n";
+};
+die;

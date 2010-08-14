@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -22,33 +22,29 @@ use warnings;
 use Gtk2::Ex::ErrorTextDialog;
 use Test::More;
 
-use FindBin;
-use File::Spec;
-use lib File::Spec->catdir($FindBin::Bin,'inc');
+use lib 't';
 use MyTestHelpers;
-use Test::Weaken::Gtk2;
+BEGIN { MyTestHelpers::nowarnings() }
 
-# Test::Weaken 3 for "contents"
-my $have_test_weaken = eval "use Test::Weaken 3; 1";
-if (! $have_test_weaken) {
-  plan skip_all => "due to Test::Weaken 3 not available -- $@";
+BEGIN {
+  # Test::Weaken 3 for "contents"
+  my $have_test_weaken = eval "use Test::Weaken 3;
+                               use Test::Weaken::Gtk2;
+                               1";
+  if (! $have_test_weaken) {
+    plan skip_all => "due to Test::Weaken 3 and/or Test::Weaken::Gtk2 not available -- $@";
+  }
+  diag ("Test::Weaken version ", Test::Weaken->VERSION);
+
+  require Gtk2;
+  Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
+  my $have_display = Gtk2->init_check;
+  if (! $have_display) {
+    plan skip_all => "due to no DISPLAY available";
+  }
+
+  plan tests => 5;
 }
-diag ("Test::Weaken version ", Test::Weaken->VERSION);
-
-require Gtk2;
-Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
-my $have_display = Gtk2->init_check;
-if (! $have_display) {
-  plan skip_all => "due to no DISPLAY available";
-}
-
-# set this to 1 for some diagnostic prints
-use constant DEBUG => 0;
-
-plan tests => 6;
-
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
 
 MyTestHelpers::glib_gtk_versions();
 
@@ -64,7 +60,7 @@ diag "on TextView::FollowAppend->new()";
        contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks) {
+  if ($leaks && defined &explain) {
     diag "Test-Weaken ", explain $leaks;
   }
 }
@@ -80,7 +76,7 @@ diag "on TextView::FollowAppend->new_with_buffer()";
        contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks) {
+  if ($leaks && defined &explain) {
     diag "Test-Weaken ", explain $leaks;
   }
 }
@@ -102,7 +98,7 @@ diag "on new() ErrorTextDialog";
        contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks) {
+  if ($leaks && defined &explain) {
     diag "Test-Weaken ", explain $leaks;
   }
 }
@@ -121,7 +117,7 @@ diag "on instance() ErrorTextDialog";
        contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks) {
+  if ($leaks && defined &explain) {
     diag "Test-Weaken ", explain $leaks;
   }
 }
@@ -147,7 +143,7 @@ diag "on instance() ErrorTextDialog";
      });
   is ($leaks, undef,
       'Test::Weaken deep garbage collection -- with save dialog too');
-  if ($leaks) {
+  if ($leaks && defined &explain) {
     diag "Test-Weaken ", explain $leaks;
   }
 }

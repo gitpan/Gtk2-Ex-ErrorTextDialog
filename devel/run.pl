@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -128,6 +128,17 @@ ksdjfksdksdjf s
   }
   sub level3 {
     nosuchfunc("an ff - \x{FF}");
+  }
+}
+{
+  my $button = Gtk2::Button->new_with_label ("die() propagated error");
+  $button->signal_connect (clicked => \&induce_a_propagated_error);
+  $vbox->pack_start ($button, 0,0,0);
+
+  sub induce_a_propagated_error {
+    print "$progname: inducing a propagated error\n";
+    eval { die 'an error' };
+    die;
   }
 }
 {

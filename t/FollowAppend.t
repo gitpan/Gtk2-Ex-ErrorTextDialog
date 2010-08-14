@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -20,26 +20,30 @@
 use 5.008;
 use strict;
 use warnings;
-use Gtk2::Ex::TextView::FollowAppend;
 use Test::More;
 
-require Gtk2;
-Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
-my $have_display = Gtk2->init_check;
-if (! $have_display) {
-  plan skip_all => "due to no DISPLAY available";
-}
-plan tests => 9;
+use lib 't';
+use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
+use Gtk2::Ex::TextView::FollowAppend;
+
+BEGIN {
+  require Gtk2;
+  Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
+  my $have_display = Gtk2->init_check;
+  if (! $have_display) {
+    plan skip_all => "due to no DISPLAY available";
+  }
+  plan tests => 8;
+}
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 5;
-ok ($Gtk2::Ex::TextView::FollowAppend::VERSION >= $want_version,
+my $want_version = 6;
+is ($Gtk2::Ex::TextView::FollowAppend::VERSION, $want_version,
     'VERSION variable');
-ok (Gtk2::Ex::TextView::FollowAppend->VERSION  >= $want_version,
+is (Gtk2::Ex::TextView::FollowAppend->VERSION,  $want_version,
     'VERSION class method');
 ok (eval { Gtk2::Ex::TextView::FollowAppend->VERSION($want_version); 1 },
     "VERSION class check $want_version");
@@ -50,8 +54,7 @@ ok (eval { Gtk2::Ex::TextView::FollowAppend->VERSION($want_version); 1 },
 {
   my $textview = Gtk2::Ex::TextView::FollowAppend->new;
 
-  ok ($textview->VERSION  >= $want_version,
-      'VERSION object method');
+  is ($textview->VERSION, $want_version, 'VERSION object method');
   ok (eval { $textview->VERSION($want_version); 1 },
       "VERSION object check $want_version");
   my $check_version = $want_version + 1000;

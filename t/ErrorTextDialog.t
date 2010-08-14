@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -20,44 +20,42 @@
 use 5.008;
 use strict;
 use warnings;
-use Gtk2::Ex::ErrorTextDialog;
 use Test::More;
 
-use FindBin;
-use File::Spec;
-use lib File::Spec->catdir($FindBin::Bin,'inc');
+use lib 't';
 use MyTestHelpers;
-use Test::Weaken::Gtk2;
+BEGIN { MyTestHelpers::nowarnings() }
 
-require Gtk2;
-Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
-my $have_display = Gtk2->init_check;
-if (! $have_display) {
-  plan skip_all => "due to no DISPLAY available";
+use Gtk2::Ex::ErrorTextDialog;
+
+BEGIN {
+  Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
+  my $have_display = Gtk2->init_check;
+  if (! $have_display) {
+    plan skip_all => "due to no DISPLAY available";
+  }
+  plan tests => 18;
 }
-plan tests => 19;
-
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 5;
-ok ($Gtk2::Ex::ErrorTextDialog::VERSION >= $want_version,
-    'VERSION variable');
-ok (Gtk2::Ex::ErrorTextDialog->VERSION  >= $want_version,
-    'VERSION class method');
-ok (eval { Gtk2::Ex::ErrorTextDialog->VERSION($want_version); 1 },
-    "VERSION class check $want_version");
-{ my $check_version = $want_version + 1000;
+my $want_version = 6;
+{
+  is ($Gtk2::Ex::ErrorTextDialog::VERSION, $want_version,
+      'VERSION variable');
+  is (Gtk2::Ex::ErrorTextDialog->VERSION,  $want_version,
+      'VERSION class method');
+  ok (eval { Gtk2::Ex::ErrorTextDialog->VERSION($want_version); 1 },
+      "VERSION class check $want_version");
+
+  my $check_version = $want_version + 1000;
   ok (! eval { Gtk2::Ex::ErrorTextDialog->VERSION($check_version); 1 },
       "VERSION class check $check_version");
 }
 {
   my $dialog = Gtk2::Ex::ErrorTextDialog->new;
 
-  ok ($dialog->VERSION  >= $want_version,
-      'VERSION object method');
+  is ($dialog->VERSION, $want_version, 'VERSION object method');
   ok (eval { $dialog->VERSION($want_version); 1 },
       "VERSION object check $want_version");
   my $check_version = $want_version + 1000;

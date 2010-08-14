@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -28,7 +28,7 @@ use Locale::Messages;
 use POSIX ();
 use Gtk2::Ex::Units 14; # version 14 for char_width
 
-our $VERSION = 5;
+our $VERSION = 6;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -103,6 +103,17 @@ sub INIT_INSTANCE {
   $self->set (message_type => 'error',
               resizable => 1);
 
+  {
+    my $check = $self->{'popup_checkbutton'}
+      = Gtk2::CheckButton->new_with_mnemonic (__('_Popup on Error'));
+    $check->set_active (1);
+    if ($check->can('set_tooltip_text')) { # new in Gtk 2.12
+      $check->set_tooltip_text
+        (__('Whether to popup this dialog when an error occurs.
+If errors are occurring repeatedly you might not want a popup every time.'));
+    }
+    $self->add_action_widget ($check, 'none');
+  }
   {
     my $button = $self->add_button ('gtk-save-as', _RESPONSE_SAVE);
     if ($button->can('set_tooltip_text')) { # new in Gtk 2.12
@@ -281,6 +292,10 @@ sub add_message {
     # @_instance_pending together, because the idle handler deferring lets
     # the continuation go through $SIG{__WARN__} before the code here runs.
     #
+    # die() gives similar tab continuations when "propagating" an error (see
+    # L<perlfunc/die>), but in that case it's within a single string so
+    # needs nothing special.
+    #
     for (my $i = 0; $i < $#msgs; ) {
       if ($msgs[$i+1] =~ /^\t/) {
         $msgs[$i] .= splice @msgs, $i+1, 1;
@@ -328,19 +343,20 @@ sub _truncate {
                     "$discard_message\n\n");
 }
 
-# not sure about this yet ...
+# not sure about this yet, an in particular which popup follows the
+# popup-on-error checkbox and which is a programmatic always popup ...
 #
 # =item C<< Gtk2::Ex::ErrorTextDialog->popup_add_message ($str) >>
-# 
+#
 # =item C<< Gtk2::Ex::ErrorTextDialog->popup_add_message ($str, $parent) >>
-# 
+#
 # =item C<< $errordialog->popup_add_message ($str) >>
-# 
+#
 # =item C<< $errordialog->popup_add_message ($str, $parent) >>
-# 
+#
 # Add C<$str> to the error dialog with C<add_message> below, and popup the
 # dialog so it's visible.
-# 
+#
 # Optional C<$parent> is a widget which the error relates to, or C<undef> for
 # none.  C<$parent> may help the window manager position the error dialog when
 # first displayed, but is not used after that.
@@ -348,15 +364,15 @@ sub _truncate {
 # not documented yet ...
 sub popup_add_message {
   my ($self, $msg, $parent) = @_;
-  $self->popup ($parent);
+  if ($self->{'popup_checkbutton'}->get_active) {
+    $self->popup ($parent);
+  }
   $self->add_message ($msg);
 }
 # not documented yet ...
 sub popup {
   my ($self, $parent) = @_;
   $self = $self->instance unless ref $self;
-
-  # if ($self->{'nopopup'}->get_active) { return; }
 
   if ($self->mapped) {
     $self->window->raise;
@@ -379,7 +395,7 @@ sub _log_to_string {
 
   return (($log_domain ? "$log_domain-" : "** ")
           . "\U$log_level\E: "
-          . (defined $message ? $message : "(no message)"))
+          . (defined $message ? $message : "(no message)"));
 }
 
 # probably not wanted ...
@@ -464,7 +480,7 @@ __END__
 #
 #   my $str = $textbuf->get('text');
 #   my $from = length($str) - $max_chars;
-# 
+#
 #   # if $from is in the middle or just after a separator then that's the
 #   # place to truncate; step back by length(_MESSAGE_SEPARATOR) to allow that
 #   # to match
@@ -476,7 +492,7 @@ __END__
 #     $pos = rindex ($str, _MESSAGE_SEPARATOR, max (0, $from));
 #     return if $pos < 0;  # only one message
 #   }
-# 
+#
 #   $pos += length(_MESSAGE_SEPARATOR);
 #   $textbuf->delete ($textbuf->get_start_iter,
 #                     $textbuf->get_iter_at_offset($pos));
@@ -486,7 +502,7 @@ __END__
 # sub _textbuf_ensure_final_newline {
 #   my ($textbuf) = @_;
 #   my $len = $textbuf->get_char_count || return;  # nothing added if empty
-# 
+#
 #   my $end_iter = $textbuf->get_end_iter;
 #   if ($textbuf->get_text ($textbuf->get_iter_at_offset($len-1),
 #                           $end_iter,
@@ -496,6 +512,8 @@ __END__
 #   }
 # }
 
+=for stopwords ErrorTextDialog Gtk2-Ex-ErrorTextDialog charset unicode Popup
+filename Gtk Ryde
 
 =head1 NAME
 
@@ -563,7 +581,7 @@ for a bug report.  Cut-and-paste works in the usual way too.
 
 =item C<< $errordialog = Gtk2::Ex::ErrorTextDialog->instance >>
 
-Return an ErrorTextDialog object designed to be shared by all parts of a
+Return an ErrorTextDialog object designed to be shared by all parts of the
 program.  This object is used when the methods below are called as class
 functions.
 
@@ -592,7 +610,7 @@ but something slimmer might be possible.
 
 =item C<< $errordialog->add_message ($str) >>
 
-Add a message to the ErrorTextDialog.  C<$str> can be Perl wide chars or raw
+Add a message to the ErrorTextDialog.  C<$str> can be wide chars or raw
 bytes and doesn't have to end with a newline.
 
 If C<$str> is raw bytes it's assumed to be in the locale charset and is
@@ -610,8 +628,8 @@ Return a wide-char string of all the messages in the ErrorTextDialog.
 
 =head1 ACTION SIGNALS
 
-The following are provided as "action signals" for use from C<Gtk2::Rc> key
-bindings, and methods for use from program code.
+The following are provided both as "action signals" for use from C<Gtk2::Rc>
+key bindings and methods for use from program code.
 
 =over 4
 
@@ -633,7 +651,7 @@ messages to.  This is the "Save As" button action.
 =item C<< $errordialog->popup_save_dialog() >>
 
 Emit the C<clear> or C<popup-save-dialog> signals, respectively.  The
-default handler in the signals does the actual work of clearing or showing
+default handler in those signals does the actual work of clearing or showing
 the save dialog and as usual for action signals that's the place to override
 or specialize in a subclass.
 
@@ -643,8 +661,8 @@ or specialize in a subclass.
 
 The stock Clear and Save-As button mnemonic keys invoke the clear and save
 actions, but there's no further key bindings by default.  You can add keys
-in the usual way from the C<Gtk2::Rc> mechanism.  The class name is
-C<Gtk2__Ex__ErrorTextDialog> so for example in your F<~/.gtkrc-2.0>
+in the usual way from the C<Gtk2::Rc> mechanism.  The class is
+C<Gtk2__Ex__ErrorTextDialog> so for example in your F<~/.gtkrc-2.0> file
 
     binding "my_error_keys" {
       bind "F5" { "popup-save-dialog" () }
@@ -666,14 +684,13 @@ line
 
     [Older messages discarded]
 
-to show it's been truncated.  The idea is to limit memory use if a program
-is spewing out lots of warnings etc.  An infinite or near-infinite stream
-probably makes the program unusable, but at least it won't consume ever more
-memory.
+The idea is to limit memory use if a program is spewing lots of warnings
+etc.  An infinite or near-infinite stream probably still makes the program
+unusable, but at least it won't consume ever more memory.
 
-Currently truncation chops off old text in the middle of a message.  This is
+Currently truncation chops old text in the middle of a message.  This is
 slightly unattractive but it's fastest and it means if there's a huge
-message then at least the last part of it is retained.
+message then at least part of it is retained.
 
 =back
 
@@ -689,7 +706,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

@@ -1,6 +1,6 @@
 # MyMakeMakerGettext.pm -- my shared MakeMaker extras
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # MyMakeMakerGettext.pm is shared by several distributions.
 #
@@ -22,6 +22,7 @@ use strict;
 use warnings;
 use ExtUtils::Manifest;
 use File::Basename;
+use File::Spec;
 
 # $makemaker is an ExtUtils::MakeMaker object, return a string of rules for
 # the po/mo files
@@ -88,12 +89,12 @@ $(POT_FILE): po/header.pot $(POT_INPUTS)
 	  --output=$(POT_TEMP_FILE) \
 	  --from-code=utf-8 \
 	  --language=Perl \
-	  --language=Perl \
 	  --keyword=__ \
 	  --keyword=__x \
 	  --keyword=N__ \
 	  --keyword=__nx:1,2 \
 	  --keyword=__p:1c,2 \
+	  --keyword=__px:1c,2 \
 	  $(POT_INPUTS)
 	cat po/header.pot $(POT_TEMP_FILE) >$(POT_FILE)
 	rm $(POT_TEMP_FILE)
@@ -118,14 +119,15 @@ $mofile: $pofile
 HERE
   }
 
-  $ret .= <<'HERE';
-# /dev/null included in case $(PO_FILES) is empty
+  my $devnull = File::Spec->devnull;
+  $ret .= <<"HERE";
+# $devnull included in case \$(PO_FILES) is empty
 check-fuzzy-po:
-	if grep -n fuzzy /dev/null $(PO_FILES); then \
-	  echo "Fuzzy entries in po file(s)"; \
-	  exit 1; \
-	else \
-	  exit 0; \
+	if grep -n fuzzy $devnull \$(PO_FILES); then \\
+	  echo "Fuzzy entries in po file(s)"; \\
+	  exit 1; \\
+	else \\
+	  exit 0; \\
 	fi
 HERE
 

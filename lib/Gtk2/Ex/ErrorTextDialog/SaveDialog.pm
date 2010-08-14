@@ -1,4 +1,4 @@
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -24,7 +24,7 @@ use Gtk2;
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Gtk2::Ex::ErrorTextDialog; # for TextDomain utf8 setups
 
-our $VERSION = 5;
+our $VERSION = 6;
 
 use constant DEBUG => 0;
 
@@ -94,7 +94,7 @@ sub INIT_INSTANCE {
 
 sub _do_response {
   my ($self, $response) = @_;
-  if (DEBUG) { print "SaveDialog response $response\n"; }
+  ### ErrorText-SaveDialog response: $response
 
   if ($response eq 'accept') {
     $self->save;
@@ -129,12 +129,12 @@ sub save {
 sub _save_to_filename {
   my ($error_dialog, $filename) = @_;
   my $text = $error_dialog->get_text;
-  if (DEBUG) {
-    require Data::Dumper;
-    print Data::Dumper->Dump([$filename,$text],['filename','text']);
-    print "  text utf8=",utf8::is_utf8($text)?"yes":"no",
-      " valid=",utf8::valid($text)?"yes":"no","\n";
-  }
+  ### ErrorText-SaveDialog _save_to_filename()
+  ### $filename
+  ### $text
+  ### text utf8: utf8::is_utf8($text)
+  ### text utf8 valid: utf8::valid($text)
+
   my $out;
   (open $out, '>:utf8', $filename
    and print $out $text
@@ -144,6 +144,9 @@ sub _save_to_filename {
 
 1;
 __END__
+
+=for stopwords ErrorTextDialog ErrorTextDialog Gtk2-Ex-ErrorTextDialog Gtk2
+SaveDialog filename Ryde
 
 =head1 NAME
 
@@ -214,7 +217,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

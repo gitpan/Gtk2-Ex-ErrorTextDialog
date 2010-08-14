@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -38,17 +38,17 @@ MyMakeMakerExtras::WriteMakefile
    PREREQ_PM    => {
                     'Devel::GlobalDestruction' => 0,
 
-                    # 1.190 for Glib::G_PRIORITY_HIGH_IDLE, and round up to
-                    # "stable" release 1.200
+                    # not sure what version might actually be needed
                     'Glib' => 0,
                     'Glib::Object::Subclass' => 0,
 
                     # my ObjectBits
-                    'Glib::Ex::SignalIds' => 0,
+                    'Glib::Ex::SignalIds' => 0,  # in version 1
 
+                    # not sure what version might actually be needed
                     'Gtk2' => 0,
 
-                    # my WidgetBits
+                    # my WidgetBits, version 14 for char_width()
                     'Gtk2::Ex::Units' => 14,
 
                     # version 1.16 for bind_textdomain_filter() to mung
@@ -58,8 +58,8 @@ MyMakeMakerExtras::WriteMakefile
                     # only one in Locale::TextDomain, until 1.18 or some such
                     'Locale::Messages'   => 0,
                    },
-   clean     => { FILES => [ '$(POT_TEMP_FILE)' # if bad xgettext
-                           ] },
+   clean     => { FILES => '$(POT_TEMP_FILE)', # if bad xgettext
+                },
 
    META_MERGE
    => { resources
@@ -69,8 +69,7 @@ MyMakeMakerExtras::WriteMakefile
         optional_features
         => { maximum_tests
              => { description => 'Have "make test" do as much as possible.',
-                  requires => { 'Test::NoWarnings' => 0,
-                                'Test::Weaken' => 3,
+                  requires => { 'Test::Weaken' => 3,
                                 'Devel::FindRef' => 0,
                               },
                 },

@@ -1,4 +1,4 @@
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -25,13 +25,13 @@ Section: perl
 Priority: optional
 Build-Depends: cdbs, debhelper (>= 5)
 Maintainer: Kevin Ryde <user42@zip.com.au>
-Standards-Version: 3.8.3
+Standards-Version: 3.9.1
 Homepage: http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html
 Bugs: mailto:user42@zip.com.au
 
 Package: libgtk2-ex-errortextdialog-perl
 Architecture: all
-Depends: perl (>= 5.8.1), libglib-perl, libgtk2-perl, libglib-ex-objectbits-perl, libgtk2-ex-widgetbits-perl (>= 14), libintl-perl (>= 1.16), libdevel-globaldestruction-perl, ${misc:Depends}
+Depends: perl (>= 5.8.1), libglib-perl, libgtk2-perl, libglib-ex-objectbits-perl, libgtk2-ex-widgetbits-perl (>= 14), libintl-perl (>= 1.16), libdevel-globaldestruction-perl, ${perl:Depends}, ${misc:Depends}
 Recommends: libintl-xs-perl (>= 1.16)
 Description: Dialog for error messages in a TextView
  Gtk2::Ex::ErrorTextDialog presents error messages to the user in a

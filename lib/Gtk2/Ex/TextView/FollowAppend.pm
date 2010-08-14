@@ -1,4 +1,4 @@
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -21,7 +21,7 @@ use strict;
 use warnings;
 use Gtk2;
 
-our $VERSION = 5;
+our $VERSION = 6;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -208,6 +208,9 @@ sub _iter_is_visible {
 1;
 __END__
 
+=for stopwords TextView TextBuffer subprocess pixbuf resize ErrorTextDialog
+Gtk2-Ex-ErrorTextDialog Gtk Ryde
+
 =head1 NAME
 
 Gtk2::Ex::TextView::FollowAppend -- variant of TextView following appended text
@@ -275,7 +278,7 @@ though, ready for a window resize or contents resize.
 
 =head1 SEE ALSO
 
-L<Gtk2::Ex::TextView>, L<Gtk2::Ex::TextBuffer>
+L<Gtk2::TextView>, L<Gtk2::TextBuffer>
 
 =head1 HOME PAGE
 
@@ -283,7 +286,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

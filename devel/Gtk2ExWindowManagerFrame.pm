@@ -1,6 +1,4 @@
-#!/usr/bin/perl
-
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -18,19 +16,20 @@
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
-package Gtk2::Ex::WindowManagerFrame;
+package Gtk2ExWindowManagerFrame;
 use strict;
 use warnings;
 use Exporter;
 use Carp;
 use Scalar::Lazy;
 
+# uncomment this to run the ### lines
+#use Smart::Comments;
+
 our @EXPORT_OK = qw(widget_to_pixbuf_with_frame
                     get_frame_window
                     window_get_parent_XID);
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
-
-use constant DEBUG => 0;
 
 
 # For reference, the xwd program only gives back the frame with its -frame
@@ -64,6 +63,9 @@ sub widget_to_pixbuf_with_frame {
   $widget = $widget->get_toplevel;
   my $window = $widget->window || croak 'Widget not realized';
   $window = get_frame_window($window) || $window;
+  ### frame window: $window
+  ### frame window XID: $window->XID
+
   my ($width, $height) = $window->get_size;
   return (Gtk2::Gdk::Pixbuf->get_from_drawable ($window,
                                                 undef, # colormap
@@ -75,64 +77,77 @@ sub widget_to_pixbuf_with_frame {
 
 sub get_frame_window {
   my ($obj) = @_;
-  my $xid = get_frame_XID ($window) || return;
+  my $xid = get_frame_XID ($obj) || do {
+    ### no xid
+    return;
+  };
+  ### get_frame_window() xid: $xid
   return Gtk2::Gdk::Window->foreign_new_for_display
     ($obj->get_display, $xid);
 }
 
-sub window_get_frame_XID {
+sub get_frame_XID {
   my ($window) = @_;
+  ### get_frame_XID() obj: "$window"
+
   if (my $func = $window->can('get_toplevel')) {
-    $window = $window->$func || croak "No toplevel widget/window";
+    $window = &$func($window) || croak "No toplevel widget/window";
   }
   if (my $func = $window->can('get_window')) {
-    $window = $window->$func || croak "No window";
+    $window = &$func($window) || croak "No window";
   }
-  if (DEBUG) { my $root = $window->get_screen->get_root_window;
-               my $root_xid = ($root->can('XID') ? $root->XID : -1);
-               my $window_xid = ($window->can('XID') ? $window->XID : -1);
-               printf "get_frame_window(): root %#X\n", $root_xid;
-               printf "  window: %7X  %dx%d\n", $window_xid, $window->get_size;
-             }
+  ### window: "$window"
+  ### window XID: $window->XID
+  ### root: $window->get_screen->get_root_window
+  ### root XID: $window->get_screen->get_root_window->XID
+
+  #   if (DEBUG) { my $window_xid = ($window->can('XID') ? $window->XID : -1);
+  #                printf "get_frame_window(): root %#X\n", $root_xid;
+  #                printf "  window: %7X  %dx%d\n", $window_xid, $window->get_size;
+  #              }
+
   my $toplevel = $window->get_toplevel;
   $toplevel->can('XID') || return undef; # not X11
   my $toplevel_xid = $toplevel->XID;
+  ### $toplevel_xid
 
   my $display = $window->get_display;
-  my $frame_xid = $toplevel_xid;
-  my $xid = window_XID_get_parent_XID ($display, $frame_xid);
-
+  my $root_xid = $window->get_screen->get_root_window->XID;
+  my $xid = $toplevel_xid;
   for (;;) {
-    if (DEBUG) { printf "  up: %7X\n", $xid; }
+    ### up from: $xid
     my $parent_xid = window_XID_get_parent_XID ($display, $xid) || last;
+    if ($parent_xid == $root_xid) { last; }
     $xid = $parent_xid;
   }
 
-  return ($frame_xid == $toplevel_xid
+  return ($xid == $toplevel_xid
           ? undef  # only root window above $toplevel_xid, no frame
-          : $frame_xid);
+          : $xid);
 }
 
-# =item C<< Gtk2::Ex::WindowManagerFrame::window_XID_get_parent_XID ($display, $xid) >>
+# =item C<< Gtk2ExWindowManagerFrame::window_XID_get_parent_XID ($display, $xid) >>
 # 
 # Return the X window ID (an integer) which is the parent window of the given
 # C<$xid> window, or undef if no parent ($xid is the root window).
 
 my $have_x11_protocol = lazy { eval { require X11::Protocol } ? 1 : 0 };
-if (DEBUG) {
-  print "have X11::Protocol: ", $have_x11_protocol?"yes":"no", "\n";
-}
+### $have_x11_protocol
 
 sub window_XID_get_parent_XID {
   my ($display, $xid) = @_;
 
   if ($have_x11_protocol) {
+    ### use X11-Protocol
     my $p = ($display->{__PACKAGE__.'.x11_protocol'}
              ||= X11::Protocol->new ($display->get_name));
-    my ($root, $parent) = $p->req('QueryTree', $xid);
+    my ($root, $parent) = $p->QueryTree($xid);
+    ### $root
+    ### $parent
     return ($parent eq 'None' ? undef : $parent);
 
   } else {
+    ### use xwininfo
     local $ENV{'DISPLAY'} = $display->get_name;
     my $command = "xwininfo -id $xid -children";
     my $str = `$command`;
@@ -152,19 +167,19 @@ __END__
 
 =head1 NAME
 
-Gtk2::Ex::WindowManagerFrame -- access to the window manager frame window
+Gtk2ExWindowManagerFrame -- access to the window manager frame window
 
 =head1 SYNOPSIS
 
- use Gtk2::Ex::WindowManagerFrame;
+ use Gtk2ExWindowManagerFrame;
 
 =head1 FUNCTIONS
 
 =over 4
 
-=item C<< Gtk2::Ex::WindowManagerFrame::get_frame_window ($widget_or_window) >>
+=item C<< Gtk2ExWindowManagerFrame::get_frame_window ($widget_or_window) >>
 
-=item C<< Gtk2::Ex::WindowManagerFrame::get_frame_XID ($widget_or_window) >>
+=item C<< Gtk2ExWindowManagerFrame::get_frame_XID ($widget_or_window) >>
 
 Return the frame window added by the window manager to the toplevel of
 C<$window_or_widget>.  C<get_frame_window> returns a "foreign" type
@@ -176,7 +191,7 @@ A widget must have a toplevel window parent, or be a toplevel
 C<Gtk2::Window> itself, and that toplevel must be realized, ie. have an
 underlying Gdk window already created.
 
-=item C<< Gtk2::Ex::WindowManagerFrame::widget_to_pixbuf_with_frame ($widget) >>
+=item C<< Gtk2ExWindowManagerFrame::widget_to_pixbuf_with_frame ($widget) >>
 
 Return a new C<Gtk2::Gdk::Pixbuf> with the contents of C<$widget>'s toplevel
 window plus its window manager frame (if it has one).

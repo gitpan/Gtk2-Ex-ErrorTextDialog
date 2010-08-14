@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -58,3 +58,4 @@ print "running ",setlocale(LC_NUMERIC),"\n";
 #   use POSIX;
 #   print "  after ",setlocale(LC_NUMERIC)," ",setlocale(LC_MESSAGES),"\n";
 # }
+E

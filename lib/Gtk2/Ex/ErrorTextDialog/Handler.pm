@@ -1,4 +1,4 @@
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -35,7 +35,7 @@ use Encode;
 use I18N::Langinfo;  # CODESET
 use PerlIO;          # for F_UTF8
 
-our $VERSION = 5;
+our $VERSION = 6;
 
 # set this to 1 for some diagnostic prints (to STDERR)
 use constant DEBUG => 0;
@@ -48,7 +48,7 @@ our $exception_handler_depth = 0;
 
 sub exception_handler {
   my ($msg) = @_;
-  if (DEBUG) { print STDERR "exception_handler()  $exception_handler_depth\n"; }
+  if (DEBUG) { print STDERR "exception_handler() $exception_handler_depth\n"; }
 
   # Normally $SIG handlers run with themselves shadowed out, and the Glib
   # exception handler doesn't re-invoke, so suspect warnings or errors in
@@ -99,7 +99,7 @@ sub exception_handler {
 
 # $_idle_handler_id is zapped at the start so exception_handler() will add
 # another _idle_handler() for any further messages generated within the
-# present _idle_handler() run.  Anything before add_message() will be
+# present _idle_handler() run.  Anything before popup_add_message() will be
 # covered by the present run, but anything after it needs another run.
 #
 # $_idle_recursions is incremented at the start as a worst case assumption
@@ -115,13 +115,14 @@ sub _idle_handler {
   if (DEBUG) { print STDERR "idle_handler() runs $_idle_recursions\n"; }
 
   require Gtk2::Ex::ErrorTextDialog;
-  Gtk2::Ex::ErrorTextDialog->add_message (undef);
-  Gtk2::Ex::ErrorTextDialog->popup (undef);
+  Gtk2::Ex::ErrorTextDialog->popup_add_message (undef);
 
   if (! $_idle_another_message) {
     $_idle_recursions = 0;
   }
-  if (DEBUG) { print STDERR "idle_handler() end, recursions now $_idle_recursions\n"; }
+  if (DEBUG) {
+    print STDERR "idle_handler() end, recursions now $_idle_recursions\n";
+  }
   return 0; # Glib::SOURCE_REMOVE
 }
 
@@ -182,6 +183,9 @@ BEGIN {
 1;
 __END__
 
+=for stopwords ErrorTextDialog Gtk2-Ex-ErrorTextDialog Perl-Gtk Gtk Gtk2
+stringized iconified Iconifying charset PerlIO utf8 STDERR Ryde
+
 =head1 NAME
 
 Gtk2::Ex::ErrorTextDialog::Handler -- exception handlers using ErrorTextDialog
@@ -223,8 +227,8 @@ L<perlvar/%SIG>).
       = \&Gtk2::Ex::ErrorTextDialog::Handler::exception_handler;
 
 The given C<$str> is printed to C<STDERR> and displayed in the shared
-ErrorTextDialog instance.  C<$str> can be an exception object too, such as a
-C<Glib::Error>, and will be stringized for display.
+C<ErrorTextDialog> instance.  C<$str> can be an exception object too such as
+a C<Glib::Error> and will be stringized for display.
 
 =item C<< Gtk2::Ex::ErrorTextDialog::Handler::log_handler ($log_domain, $log_levels, $message) >>
 
@@ -316,7 +320,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

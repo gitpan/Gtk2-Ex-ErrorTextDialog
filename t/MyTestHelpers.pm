@@ -1,6 +1,6 @@
 # MyTestHelpers.pm -- my shared test script helpers
 
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # MyTestHelpers.pm is shared by several distributions.
 #
@@ -20,23 +20,55 @@
 package MyTestHelpers;
 use strict;
 use warnings;
+use Exporter;
+use vars qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 
-use base 'Exporter';
-use vars qw(@EXPORT_OK %EXPORT_TAGS);
+@ISA = ('Exporter');
 @EXPORT_OK = qw(findrefs
                 main_iterations
                 warn_suppress_gtk_icon
                 glib_gtk_versions
-                any_signal_connections);
+                any_signal_connections
+                nowarnings);
 %EXPORT_TAGS = (all => \@EXPORT_OK);
 
-use constant DEBUG => 0;
+sub DEBUG { 0 }
 
 
 #-----------------------------------------------------------------------------
 
+{
+  my $warning_count;
+  my $want_stacktrace;
+  sub nowarnings_handler {
+    $warning_count++;
+    if ($want_stacktrace && eval { require Devel::StackTrace }) {
+      unshift @_, Devel::StackTrace->new->as_string;
+    }
+    warn @_;
+  }
+  sub nowarnings {
+    ($want_stacktrace) = @_;
+    $SIG{'__WARN__'} = \&nowarnings_handler;
+  }
+  END {
+    if ($warning_count) {
+      require Carp;
+
+      my $save_stacktrace = $want_stacktrace;
+      $want_stacktrace = 0;
+      Carp::carp ("Saw $warning_count warning(s)");
+      my $want_stacktrace = $save_stacktrace;
+
+      Test::More::diag('Exit code 1 for warnings');
+      $? = 1;
+    }
+  }
+}
+
 sub findrefs {
   my ($obj) = @_;
+  require Test::More;
   defined $obj or return;
   require Scalar::Util;
   if (ref $obj && Scalar::Util::reftype($obj) eq 'HASH') {
@@ -57,6 +89,7 @@ sub findrefs {
 # iterations is good for test safety.
 #
 sub main_iterations {
+  require Test::More;
   my $count = 0;
   if (DEBUG) { Test::More::diag ("main_iterations() ..."); }
   while (Gtk2->events_pending) {
@@ -71,11 +104,13 @@ sub main_iterations {
   Test::More::diag ("main_iterations(): ran $count events/iterations");
 }
 
-# Eg,
-#     my $something = do {
+# warn_suppress_gtk_icon() is a $SIG{__WARN__} handler which suppresses spam
+# from Gtk trying to make you buy the hi-colour icon theme.  Eg,
+#
+#     {
 #       local $SIG{'__WARN__'} = \&MyTestHelpers::warn_suppress_gtk_icon;
-#       SomeThing->new;
-#     };
+#       $something = SomeThing->new;
+#     }
 #
 sub warn_suppress_gtk_icon {
   my ($message) = @_;
@@ -85,6 +120,7 @@ sub warn_suppress_gtk_icon {
 }
 
 sub glib_gtk_versions {
+  require Test::More;
   my $gtk2_loaded = Gtk2->can('init');
   my $glib_loaded = Glib->can('get_home_dir');
 
@@ -114,10 +150,14 @@ sub glib_gtk_versions {
   }
 }
 
-# return true if there's any signal handlers connected to $obj
+# Return true if there's any signal handlers connected to $obj.
+#
+# Signal IDs are from 1 up, don't pass 0 to signal_handler_is_connected()
+# since in Glib 2.4.1 it spits out a g_log() error.
+#
 sub any_signal_connections {
   my ($obj) = @_;
-  my @connected = grep {$obj->signal_handler_is_connected ($_)} (0 .. 500);
+  my @connected = grep {$obj->signal_handler_is_connected ($_)} (1 .. 500);
   if (@connected) {
     my $connected = join(',',@connected);
     Test::More::diag ("$obj signal handlers connected: $connected");
@@ -129,10 +169,13 @@ sub any_signal_connections {
 # wait for $signame to be emitted on $widget, with a timeout
 sub wait_for_event {
   my ($widget, $signame) = @_;
+  require Test::More;
+  if (DEBUG) { Test::More::diag ("wait_for_event() $signame on $widget"); }
   my $done = 0;
   my $got_event = 0;
   my $sig_id = $widget->signal_connect
     ($signame => sub {
+       if (DEBUG) { Test::More::diag ("wait_for_event()   $signame received"); }
        $done = 1;
        return 0; # Gtk2::EVENT_PROPAGATE
      });
@@ -140,17 +183,18 @@ sub wait_for_event {
     (30_000, # 30 seconds
      sub {
        $done = 1;
-       Test::More::diag ("oops, timeout waiting for $signame");
+       Test::More::diag ("wait_for_event() oops, timeout waiting for $signame on $widget");
        return 1; # Glib::SOURCE_CONTINUE
      });
   $widget->get_display->sync;
 
   my $count = 0;
   while (! $done) {
+    if (DEBUG >= 2) { Test::More::diag ("wait_for_event()   iteration $count"); }
     Gtk2->main_iteration;
     $count++;
   }
-  Test::More::diag ("wait_for_event('$signame'): ran $count events/iterations\n");
+  Test::More::diag ("wait_for_event(): '$signame' ran $count events/iterations\n");
 
   $widget->signal_handler_disconnect ($sig_id);
   Glib::Source->remove ($timer_id);

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -46,7 +46,6 @@ my $fake_text_property_called = 0;
   no warnings 'once';
   local *Gtk2::MessageDialog::find_property = sub {
     my ($obj, $pname) = @_;
-    print "$pname\n";
     if ($pname eq 'text') {
       $fake_text_property_called++;
       return; # pretend doesn't exist

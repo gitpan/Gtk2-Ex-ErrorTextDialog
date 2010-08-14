@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -21,21 +21,22 @@
 use 5.008;
 use strict;
 use warnings;
-use Gtk2::Ex::ErrorTextDialog::Handler;
-use Test::More tests => 8;
+use Test::More tests => 7;
 
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
+use lib 't';
+use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
 ## no critic (ProtectPrivateSubs)
+require Gtk2::Ex::ErrorTextDialog::Handler;
 
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 5;
-ok ($Gtk2::Ex::ErrorTextDialog::Handler::VERSION >= $want_version,
+my $want_version = 6;
+is ($Gtk2::Ex::ErrorTextDialog::Handler::VERSION, $want_version,
     'VERSION variable');
-ok (Gtk2::Ex::ErrorTextDialog::Handler->VERSION  >= $want_version,
+is (Gtk2::Ex::ErrorTextDialog::Handler->VERSION, $want_version,
     'VERSION class method');
 ok (eval { Gtk2::Ex::ErrorTextDialog::Handler->VERSION($want_version); 1 },
     "VERSION class check $want_version");
