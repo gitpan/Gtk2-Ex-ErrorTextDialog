@@ -34,12 +34,12 @@ BEGIN {
   if (! $have_display) {
     plan skip_all => "due to no DISPLAY available";
   }
-  plan tests => 18;
+  plan tests => 20;
 }
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 6;
+my $want_version = 7;
 {
   is ($Gtk2::Ex::ErrorTextDialog::VERSION, $want_version,
       'VERSION variable');
@@ -83,6 +83,7 @@ diag "Scalar::Util::weaken";
 
 {
   my $instance = Gtk2::Ex::ErrorTextDialog->instance;
+  isa_ok ($instance, 'Gtk2::Ex::ErrorTextDialog');
   my $i2 = Gtk2::Ex::ErrorTextDialog->instance;
   is ($instance, $i2, 'instance() same from two calls');
 
@@ -173,6 +174,17 @@ diag "Scalar::Util::weaken";
   is ($textbuf->get_char_count, 0, 'clear - textbuf now empty');
 
   $dialog->destroy;
+}
+
+#-----------------------------------------------------------------------------
+# popup_add_message()
+
+{
+  Gtk2::Ex::ErrorTextDialog->popup_add_message ('hello');
+
+  my $dialog = Gtk2::Ex::ErrorTextDialog->instance;
+  isa_ok ($dialog, 'Gtk2::Ex::ErrorTextDialog');
+  $dialog->popup_add_message ('hello');
 }
 
 exit 0;

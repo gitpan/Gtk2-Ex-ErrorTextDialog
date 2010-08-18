@@ -15,13 +15,13 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
-SHA1 c4e47a1ac28fb54e707ab0082723e979c6660b45 Changes
+SHA1 bfc1a0d461190c46cd4c16a54da1ea066c758f08 Changes
 SHA1 be190e6bbc823d8da7c08a4097b8e4cfcd6fc153 MANIFEST
 SHA1 9f057ed3ba7d042426c4d899f7685b4ae05076b2 MANIFEST.SKIP
-SHA1 ae1c84859e69fbfb4bc04ee7f726b5f9f51f9145 META.yml
+SHA1 e36e6331dd0d1b24a920e94ec77441ec817a0261 META.yml
 SHA1 444a3aa0ec69ce2f3381fa4e73956da91b267d40 Makefile.PL
 SHA1 7025827a532801413d9e032b9a32e9347629ae04 README
-SHA1 6e0ea1622e65ba675bb11607249a9940af63fc10 debian/changelog
+SHA1 649378f765b312da7861feaefc6f0b09918145fb debian/changelog
 SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
 SHA1 bd681cb2630cf1839c1af9fb59bdce716c17c685 debian/control
 SHA1 470e39a5aa5fef386fbbf9b57b7ff33844dd4fd8 debian/copyright
@@ -60,13 +60,13 @@ SHA1 13ba07572a17c401bbd7df42f4dc6be8d1665a9e devel/trace-bytes.pl
 SHA1 2608219a71b8172a0a7a49ce302059b73f5f7393 devel/version.pl
 SHA1 c2522ecb4799dbc7dbae15e08c20d74dcd350429 examples/keybindings.pl
 SHA1 915265125a5ed7c8d08d6e4058ebda3f91a75d9a examples/simple.pl
-SHA1 3f00375a75a28eb28c9216d722220e52aec8e58d inc/MyMakeMakerExtras.pm
+SHA1 8674f138163373c4bb2db3b26cc81de8adf794b6 inc/MyMakeMakerExtras.pm
 SHA1 a2fa0855f3a1ea6140956ec567bea259e0099893 inc/MyMakeMakerGettext.pm
 SHA1 692a1ddc2ca6b98cac7b48ea40bc1ac1509e8ed9 inc/my_pod2html
-SHA1 71780aae7d9e55cc406f012d859ecbe4a07487ad lib/Gtk2/Ex/ErrorTextDialog.pm
-SHA1 6a490361d00a4f766ec8d76456ce65343103b5e1 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
-SHA1 2c4fde63931c880284ae9f9de7fd476cea77b049 lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
-SHA1 75c0ecdbccea8d5d082fd9d938743f0e66efd5d3 lib/Gtk2/Ex/TextView/FollowAppend.pm
+SHA1 940f8ab508afd548b4dcb06c536aabcece1428f4 lib/Gtk2/Ex/ErrorTextDialog.pm
+SHA1 901d58e260dce35fb35560c5923f606f82a19231 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
+SHA1 cce8696e8bd38b98fe2050381eb3ee0d0ed701cc lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
+SHA1 f286d391194aeee6ab952b7bd1a59433aba2fbab lib/Gtk2/Ex/TextView/FollowAppend.pm
 SHA1 9706aca32c0be1c419d1f3af6d80d9fa46a1c4a5 po/Gtk2-Ex-ErrorTextDialog.pot
 SHA1 2f1b387c57b4661021ac7bb3a1e399156118b9d0 po/README
 SHA1 806349aec4b01bfd738a1eecb31f084d5ff141a0 po/header.pot
@@ -75,16 +75,16 @@ SHA1 37abd43b41068804ea4bb099fdd89af21be82926 t/0-Test-DistManifest.t
 SHA1 8f93fb4c8f0424a4442cc93c9a2e86342ef55281 t/0-Test-Pod.t
 SHA1 1de8f07883f6bf1a2ef79f2cb8adf1deb3f61cee t/0-Test-Synopsis.t
 SHA1 fb517c2fae5ddac559318bf6a224949115ea3129 t/0-Test-YAML-Meta.t
-SHA1 e773374f44cbbf4cd7c6c762863dda2095f4ed64 t/ErrorTextDialog.t
-SHA1 75df59a71e32d73098e274180fdb047b4c0f5b3b t/FollowAppend.t
-SHA1 ae248402d32559c06c6f73eb03495a580f11ae60 t/Handler.t
+SHA1 cd976edcd435e60715f7d66b99034e2d41a21e7a t/ErrorTextDialog.t
+SHA1 2f3e1db3b87a6d06749338c11637bb964be33d73 t/FollowAppend.t
+SHA1 b1dec52c3a22f36a0f6cb6ed33772385a8c266a0 t/Handler.t
 SHA1 b98ec63aaa140101fe850d117c483d88b25a32a9 t/MyTestHelpers.pm
-SHA1 33d91b080ddb896a4ca9fceb0ba467bd9b4a4295 t/SaveDialog.t
+SHA1 04135f51c94009b2f06006c923cb589f754d85ec t/SaveDialog.t
 SHA1 0dfd843b4b4677c02c8c7681b28598b9a29af0e6 t/test-weaken.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iD8DBQFMZe8BLFMCIV9q3ToRAi1zAJ9UuqMVClDMOU2hX34g1nB5WPUtjwCdEseu
-IHRIXa6Q+OFYU7sH3G4qla0=
-=hvdn
+iD8DBQFMax1LLFMCIV9q3ToRAlz8AJ936f3azmQsypX+XVG+951Yc8M0ZwCgtOjq
+gKMAuL/dRYMztQ1xKjZzBnI=
+=J8+q
 -----END PGP SIGNATURE-----

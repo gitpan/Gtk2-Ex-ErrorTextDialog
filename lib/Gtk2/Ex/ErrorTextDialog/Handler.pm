@@ -35,7 +35,7 @@ use Encode;
 use I18N::Langinfo;  # CODESET
 use PerlIO;          # for F_UTF8
 
-our $VERSION = 6;
+our $VERSION = 7;
 
 # set this to 1 for some diagnostic prints (to STDERR)
 use constant DEBUG => 0;

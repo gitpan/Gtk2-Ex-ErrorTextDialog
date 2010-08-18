@@ -40,7 +40,7 @@ BEGIN {
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 6;
+my $want_version = 7;
 is ($Gtk2::Ex::TextView::FollowAppend::VERSION, $want_version,
     'VERSION variable');
 is (Gtk2::Ex::TextView::FollowAppend->VERSION,  $want_version,

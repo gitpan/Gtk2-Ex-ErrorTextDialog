@@ -28,7 +28,7 @@ use Locale::Messages;
 use POSIX ();
 use Gtk2::Ex::Units 14; # version 14 for char_width
 
-our $VERSION = 6;
+our $VERSION = 7;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -364,6 +364,8 @@ sub _truncate {
 # not documented yet ...
 sub popup_add_message {
   my ($self, $msg, $parent) = @_;
+  $self = $self->instance unless ref $self;
+
   if ($self->{'popup_checkbutton'}->get_active) {
     $self->popup ($parent);
   }
