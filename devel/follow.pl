@@ -21,12 +21,26 @@ use 5.008;
 use strict;
 use warnings;
 use Data::Dumper;
-use Gtk2 '-init';
 use Gtk2::Ex::TextView::FollowAppend;
 
 use FindBin;
 my $progname = $FindBin::Script;
 
+{
+  # get_buffer() and get('buffer') both create
+  my $textview = Gtk2::TextView->new;
+  my $buf = $textview->get('buffer');
+  print "$buf\n";
+  print $textview->set('buffer',undef);
+  # $textview->destroy;
+  print $textview->get('buffer');
+  undef $buf;
+  undef $textview;
+  exit 0;
+}
+
+
+Gtk2->init;
 my $toplevel = Gtk2::Window->new ('toplevel');
 $toplevel->set_default_size (500, 200);
 $toplevel->signal_connect (destroy => sub {
@@ -50,13 +64,22 @@ my $textview = Gtk2::Ex::TextView::FollowAppend->new_with_buffer ($textbuf);
 # my $follow = Gtk2::Ex::TextView::FollowAppend->new ($textview);
 $scrolled->add ($textview);
 
-# $textview->signal_connect (size_allocate => sub {
-#                              my ($textview, $alloc) = @_;
-#                              print "$progname: size_allocate ",
-#                                $alloc->x,",",$alloc->y,
-#                                  " ",$alloc->width,"x",$alloc->height,
-#                                    "\n";
-#                            });
+$textview->signal_connect (size_allocate => sub {
+                             my ($textview, $alloc) = @_;
+                             print "$progname: size_allocate ",
+                               $alloc->x,",",$alloc->y,
+                                 " ",$alloc->width,"x",$alloc->height,
+                                   "\n";
+                             Glib::Idle->add
+                                 (sub {
+                                    my $alloc = $textview->allocation;
+                                    print "$progname: idle allocation ",
+                                      $alloc->x,",",$alloc->y,
+                                        " ",$alloc->width,"x",$alloc->height,
+                                          "\n";
+                                    return Glib::SOURCE_REMOVE;
+                                  });
+                           });
 # $textview->get('vadjustment');
 
 

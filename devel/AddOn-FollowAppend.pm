@@ -1,8 +1,11 @@
 # stay at end when resize ...
+#
+# size-allocate is run-first, so for a shrink would have to keep track of
+# whether the end of the text was previously visible
 
 
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -23,6 +26,7 @@ package Gtk2::Ex::TextView::FollowAppend;
 use strict;
 use warnings;
 use Gtk2;
+use Glib::Ex::SignalIds;
 
 our $VERSION = 1;
 
@@ -31,7 +35,6 @@ use constant DEBUG => 0;
 sub new {
   my ($class, $textview) = @_;
 
-  require Glib::Ex::SignalIds;
   require Scalar::Util;
 
   my $self = bless { textview => $textview }, $class;
@@ -212,7 +215,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

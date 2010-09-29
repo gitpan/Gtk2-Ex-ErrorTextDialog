@@ -24,7 +24,7 @@ use Gtk2;
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Gtk2::Ex::ErrorTextDialog; # for TextDomain utf8 setups
 
-our $VERSION = 7;
+our $VERSION = 8;
 
 use constant DEBUG => 0;
 

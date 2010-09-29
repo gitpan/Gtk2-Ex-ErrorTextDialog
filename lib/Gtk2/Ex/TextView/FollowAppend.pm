@@ -21,10 +21,10 @@ use strict;
 use warnings;
 use Gtk2;
 
-our $VERSION = 7;
+# uncomment this to run the ### lines
+#use Smart::Comments;
 
-# set this to 1 for some diagnostic prints
-use constant DEBUG => 0;
+our $VERSION = 8;
 
 use Glib::Object::Subclass
   'Gtk2::TextView',
@@ -35,13 +35,13 @@ use Glib::Object::Subclass
 
 sub new_with_buffer {
   my ($class, $textbuf) = @_;
-  return Glib::Object::new ($class, buffer => $textbuf);
+  return $class->Glib::Object::new (buffer => $textbuf);
 }
 
 # 'destroy' class closure
 sub _do_destroy {
   my ($self) = @_;
-  if (DEBUG) { print "FollowAppend destroy $self\n"; }
+  ### FollowAppend _do_destroy(): "$self"
 
   # The GtkObjectFlags GTK_IN_DESTRUCTION might do this, if it was exposed
   # at the perl level.  Except gtk_object_dispose() looks like the flag
@@ -57,7 +57,7 @@ sub _do_destroy {
 # 'notify' class closure
 sub _do_notify {
   my ($self, $pspec) = @_;
-  if (DEBUG) { print "FollowAppend notify ",$pspec->get_name,"\n"; }
+  ### FollowAppend _do_notify(): $pspec->get_name
   $self->signal_chain_from_overridden ($pspec);
 
   # after 'destroy' runs it's important not to call ->get_buffer() since
@@ -91,40 +91,39 @@ sub _do_notify {
 # 'size-allocate' class closure
 sub _do_size_allocate {
   my ($self, $alloc) = @_;
-  if (DEBUG) { print "FollowAppend size_allocate ",
-                 $alloc->x,",",$alloc->y,
-                   " ",$alloc->width,"x",$alloc->height, "\n"; }
+  ### FollowAppend size_allocate: $alloc->x.",".$alloc->y." ".$alloc->width."x".$alloc->height
+
   my $want_follow = _want_follow ($self);
-  if (DEBUG) { print "  want_follow ",$want_follow?"yes":"no","\n"; }
+  ### $want_follow
 
   $self->signal_chain_from_overridden ($alloc);
 
   if ($want_follow) {
-    if (DEBUG) { print "  size_allocate scroll_to_mark\n"; }
+    ### _do_size_allocate() scroll_to_mark
     $self->scroll_to_mark ($self->get_buffer->get_insert, 0, 0, 0,0);
   }
 }
 
-# 'insert-pixbuf' and 'insert-child-anchor' on textbuf
+# 'insert-pixbuf' and 'insert-child-anchor' signal handler on textbuf
 sub _do_textbuf_insert_pixbuf_or_anchor {
   my ($textbuf, $iter, $pixbuf_or_anchor, $ref_weak_self) = @_;
   _do_textbuf_insert ($textbuf, $iter, undef, 1, $ref_weak_self);
 }
 
-# 'insert-text' handler on textbuf, plus fakery from 'insert-pixbuf' or
-# 'insert-child-anchor'
+# 'insert-text' signal handler on textbuf,
+# plus fakery from 'insert-pixbuf' and 'insert-child-anchor' above
 sub _do_textbuf_insert {
   my ($textbuf, $iter, $text, $textlen, $ref_weak_self) = @_;
   my $self = $$ref_weak_self || return;
-  if (DEBUG) { print "FollowAppend insert iter=", $iter->get_offset,
-                 " len=$textlen",
-                   " text=",(defined $text ? "'$text'" : "undef"),"\n" }
+  ### FollowAppend _do_textbuf_insert() iter: $iter->get_offset
+  ### $textlen
+  ### $text
 
   if ($iter->is_end
       && _want_follow ($self,
                        $textbuf->get_iter_at_offset
                        ($iter->get_offset - $textlen))) {
-    if (DEBUG) { print "  scroll_to_mark\n"; }
+    ### _do_textbuf_insert() scroll_to_mark
     $self->scroll_to_mark ($textbuf->get_insert, 0, 0, 0,0);
   }
 }
@@ -132,39 +131,29 @@ sub _do_textbuf_insert {
 sub _want_follow {
   my ($self, $insert_iter) = @_;
   my $textbuf = $self->get_buffer;
-  my $cursor_mark = $textbuf->get_insert;
-  my $cursor_iter = $textbuf->get_iter_at_mark ($cursor_mark);
+  my $cursor_iter = $textbuf->get_iter_at_mark ($textbuf->get_insert);
 
-  if (DEBUG) {
-    print "  insert=", ($insert_iter||$textbuf->get_end_iter)->get_offset,
-      " cursor=", $cursor_iter->get_offset,
-        " end=", $textbuf->get_end_iter->get_offset,
-          " charcount=", $textbuf->get_char_count,
-            "\n";
-  }
+  ### insert at: ($insert_iter||$textbuf->get_end_iter)->get_offset
+  ### cursor: $cursor_iter->get_offset
+  ### end: $textbuf->get_end_iter->get_offset
+  ### charcount: $textbuf->get_char_count
 
   return ($cursor_iter->is_end
           && _iter_is_visible ($self, $insert_iter||$textbuf->get_end_iter));
 }
 
 # return true if $iter is visible in $textview
+# partially visible $iter pos returns true
 sub _iter_is_visible {
   my ($textview, $iter) = @_;
   my $visible_rect = $textview->get_visible_rect;
 
-  if (DEBUG) { print "  visible rect ",
-                 $visible_rect->x,",",$visible_rect->y," ",
-                   $visible_rect->width,"x",$visible_rect->height,
-                     " height to ",$visible_rect->y+$visible_rect->height,"\n";
-               my $start_iter = $textview->get_iter_at_location
-                 (0, $visible_rect->y);
-               my $end_iter = $textview->get_iter_at_location
-                 (0, $visible_rect->y + $visible_rect->height);
-               print "  iter=",$iter->get_offset,
-                 "  start_vis=",$start_iter->get_offset,
-                   "  end_vis=",$end_iter->get_offset,
-                     "  end_buf=",$textview->get_buffer->get_char_count,"\n";
-             }
+  ###
+  ### visible rect: $visible_rect->x.",".$visible_rect->y." ".$visible_rect->width."x".$visible_rect->height." height to ".($visible_rect->y+$visible_rect->height)
+  ### iter: $iter->get_offset
+  ### start_vis: do { my $start_iter = $textview->get_iter_at_location (0, $visible_rect->y); $start_iter->get_offset }
+  ### end vis: do { my $end_iter = $textview->get_iter_at_location (0, $visible_rect->y + $visible_rect->height); $end_iter->get_offset }
+  ### end buf: $textview->get_buffer->get_char_count
 
   my $start_iter = $textview->get_iter_at_location(0, $visible_rect->y);
   if ($iter->compare($start_iter) < 0) {
@@ -201,6 +190,7 @@ sub _iter_is_visible {
 # 
 #   # if y1+h1 < y2 then rect1 is entirely above rect2, or if y2+h2 < y1 then
 #   # rect2 is entirely above rect1; if neither then there's overlap
+#   # rect_overlaps_rect() ?
 #   return ! ($visible_rect->y + $visible_rect->height < $iter_rect->y
 #             || $iter_rect->y + $iter_rect->height < $visible_rect->y);
 # }
@@ -231,19 +221,28 @@ C<Gtk2::Ex::TextView::FollowAppend> is a subclass of C<Gtk2::TextView>.
 
 =head1 DESCRIPTION
 
-B<Caution!  This is preliminary.  It might move to a different dist and
-might get a rename, so don't use it yet, or only give it a try!>
+B<This is slightly experimental and might move to a different dist.>
 
-TextView::FollowAppend is a variant of TextView which automatically scrolls
-down to follow text appended in its TextBuffer.  The effect is like Emacs
-C<compilation-scroll-output>.  It's good for following text progressively
-added by a background task or subprocess, yet still allow the user to scroll
-back to see earlier output.
+TextView::FollowAppend arranges to automatically scroll to follow text
+appended in the underlying TextBuffer.  The effect is like Emacs
+C<compilation-scroll-output> and is good for following text progressively
+added by a background task or subprocess, but still allowing the user to
+scroll back to see earlier output.
 
 A scroll is done when the insertion point cursor is at the end of the buffer
 and the buffer end is visible.  Any text, pixbuf or child insertion, or
 child resize or window resize then gets a scroll to keep the end still
 visible.
+
+=head2 Implementation
+
+This is implemented as a subclass of TextView since that seems the easiest
+way to catch a C<size-allocate> before the new size has been applied, so as
+to see whether the cursor-at-end plus end-visible conditions are met and
+thus end-visible should be forced on the new size.  Because C<size-allocate>
+is a C<run-first> signal an external signal connection only runs once the
+new size is applied.  Maybe it'd be possible to track end-visible all the
+time though, ready for a window resize or contents resize.
 
 =head1 FUNCTIONS
 
@@ -265,16 +264,6 @@ TextView::FollowAppend.  It's the same as
     $textview = Gtk2::Ex::TextView::FollowAppend->new (buffer => $textbuf);
 
 =back
-
-=head1 OTHER NOTES
-
-This is done as a subclass of TextView since that seems the easiest way to
-catch a C<size-allocate> before the new size has been applied, so as to see
-whether the cursor-at-end plus end-visible conditions are met and thus
-end-visible should be forced on the new size.  Because C<size-allocate> is a
-C<run-first> signal so an external signal connection only runs once the new
-size is applied.  Maybe it'd be possible to track end-visible all the time
-though, ready for a window resize or contents resize.
 
 =head1 SEE ALSO
 

@@ -39,7 +39,7 @@ BEGIN {
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 7;
+my $want_version = 8;
 {
   is ($Gtk2::Ex::ErrorTextDialog::VERSION, $want_version,
       'VERSION variable');

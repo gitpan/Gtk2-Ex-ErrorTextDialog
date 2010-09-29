@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Gtk2-Ex-ErrorTextDialog
-version:            7
+version:            8
 abstract:           Dialog showing error messages in a TextView.
 author:
     - Kevin Ryde <user42@zip.com.au>
@@ -13,6 +13,7 @@ build_requires:
 requires:
     Devel::GlobalDestruction:  0
     Glib:                 0
+    Glib::Ex::ObjectBits:  12
     Glib::Ex::SignalIds:  0
     Glib::Object::Subclass:  0
     Gtk2:                 0

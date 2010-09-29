@@ -26,9 +26,10 @@ use Locale::TextDomain 1.16; # version 1.16 for bind_textdomain_filter()
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Locale::Messages;
 use POSIX ();
+use Glib::Ex::ObjectBits;
 use Gtk2::Ex::Units 14; # version 14 for char_width
 
-our $VERSION = 7;
+our $VERSION = 8;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -107,20 +108,21 @@ sub INIT_INSTANCE {
     my $check = $self->{'popup_checkbutton'}
       = Gtk2::CheckButton->new_with_mnemonic (__('_Popup on Error'));
     $check->set_active (1);
-    if ($check->can('set_tooltip_text')) { # new in Gtk 2.12
-      $check->set_tooltip_text
-        (__('Whether to popup this dialog when an error occurs.
+    Glib::Ex::ObjectBits::set_property_maybe
+        ($check,
+         # tooltip-text new in Gtk 2.12
+         tooltip_text => __('Whether to popup this dialog when an error occurs.
 If errors are occurring repeatedly you might not want a popup every time.'));
-    }
+
     $self->add_action_widget ($check, 'none');
   }
   {
     my $button = $self->add_button ('gtk-save-as', _RESPONSE_SAVE);
-    if ($button->can('set_tooltip_text')) { # new in Gtk 2.12
-      $button->set_tooltip_text
-        (__('Save the error messages to a file, perhaps to include in a bug report.
+    Glib::Ex::ObjectBits::set_property_maybe
+        ($button,
+         # tooltip-text new in Gtk 2.12
+         tooltip_text => __('Save the error messages to a file, perhaps to include in a bug report.
 (Cut and paste works too, but saving may be better for very long messages.)'));
-    }
   }
   $self->add_buttons ('gtk-clear' => _RESPONSE_CLEAR,
                       'gtk-close' => 'close');

@@ -43,7 +43,8 @@ MyMakeMakerExtras::WriteMakefile
                     'Glib::Object::Subclass' => 0,
 
                     # my ObjectBits
-                    'Glib::Ex::SignalIds' => 0,  # in version 1
+                    'Glib::Ex::ObjectBits' => 12, # new in version 12
+                    'Glib::Ex::SignalIds'  => 0,  # in version 1
 
                     # not sure what version might actually be needed
                     'Gtk2' => 0,
