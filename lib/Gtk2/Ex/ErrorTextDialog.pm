@@ -29,7 +29,7 @@ use POSIX ();
 use Glib::Ex::ObjectBits;
 use Gtk2::Ex::Units 14; # version 14 for char_width
 
-our $VERSION = 8;
+our $VERSION = 9;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -379,7 +379,8 @@ sub popup {
   $self = $self->instance unless ref $self;
 
   if ($self->mapped) {
-    $self->window->raise;
+    # too intrusive to raise every time
+    # $self->window->raise;
   } else {
     # allow for $parent a non-toplevel
     if ($parent) { $parent = $parent->get_toplevel; }

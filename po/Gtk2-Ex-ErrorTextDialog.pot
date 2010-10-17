@@ -63,10 +63,10 @@ msgstr ""
 msgid "[Older messages discarded]"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm:72
+#: lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm:70
 msgid "Save Errors"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm:88
+#: lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm:86
 msgid "Save error messages to a file (with UTF-8 encoding)"
 msgstr ""

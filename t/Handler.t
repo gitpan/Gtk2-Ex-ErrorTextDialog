@@ -33,7 +33,7 @@ require Gtk2::Ex::ErrorTextDialog::Handler;
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 8;
+my $want_version = 9;
 is ($Gtk2::Ex::ErrorTextDialog::Handler::VERSION, $want_version,
     'VERSION variable');
 is (Gtk2::Ex::ErrorTextDialog::Handler->VERSION, $want_version,

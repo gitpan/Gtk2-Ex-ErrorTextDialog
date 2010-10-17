@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.63.
+signed via the Module::Signature module, version 0.66.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -15,20 +15,20 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
-SHA1 fede28a5b5cd47db652b591704c1230540c81b15 Changes
+SHA1 70eb493527c0a32fe316c58e629ba727bf50e968 Changes
 SHA1 af9a97c8c3015557b386f044fed2026c040ea240 MANIFEST
 SHA1 e6e7c2904ea5d300c0ddf70fc5a80f5005229aa9 MANIFEST.SKIP
-SHA1 eaf0eb2a0bb72c59963f4de90024b35b6b4b74c4 META.yml
+SHA1 50772bd10a214af57c7e1ec6eaf8714dce9829aa META.yml
 SHA1 851f60b7d3914e73757ae2a18a51732742867b4c Makefile.PL
 SHA1 7025827a532801413d9e032b9a32e9347629ae04 README
-SHA1 fbad2860862fb1cce6e3cd9b03c342b3dcc86898 debian/changelog
+SHA1 074254002843b348d54ef60f92d462d56253a9f3 debian/changelog
 SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
 SHA1 564e2f4c3104163592deec92a756d4164caca77a debian/control
 SHA1 470e39a5aa5fef386fbbf9b57b7ff33844dd4fd8 debian/copyright
 SHA1 64c9f988fc8e16d9a111fa5dc052b76d10185658 debian/patches/pod-examples-dir.diff
 SHA1 fd77bd58065ce961d183399d2766203b1069c4fe debian/rules
 SHA1 61652cd1568dcf2614df833eba241755eee34e89 debian/source/format
-SHA1 85af0ba38da22235682b5f7d37a3cff8654415e3 debian/watch
+SHA1 16ee210d7f4bd7302b0ecc0352f3759a1185398a debian/watch
 SHA1 66c41f119e8e28963ded2816bf1459a83d28c483 devel/Action.pm
 SHA1 a327cdd04e14b9113135c96518011352e8f46162 devel/AddOn-FollowAppend.pm
 SHA1 cc4e177edc2e0f048548995333c937fdc6e04bde devel/Foo.pm
@@ -65,18 +65,18 @@ SHA1 915265125a5ed7c8d08d6e4058ebda3f91a75d9a examples/simple.pl
 SHA1 3cf3345a9177dbe362dfc8fbf192272f4a611ca8 inc/MyMakeMakerExtras.pm
 SHA1 a2fa0855f3a1ea6140956ec567bea259e0099893 inc/MyMakeMakerGettext.pm
 SHA1 692a1ddc2ca6b98cac7b48ea40bc1ac1509e8ed9 inc/my_pod2html
-SHA1 ae1d47ba4fa57e6fa0e1996c8d7a247c2ba66343 lib/Gtk2/Ex/ErrorTextDialog.pm
-SHA1 a36ccd36491c8d01cbc54a905b009a57ed87c1a7 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
-SHA1 49fe784762291e790aea6614ce0fe6bfdae4f874 lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
-SHA1 917f2c59aa4ef62bf1e09a1239fb44ed0ce7fe30 lib/Gtk2/Ex/TextView/FollowAppend.pm
-SHA1 b3f1bb1910470712a4126e7dc338c8d6c1fe7986 po/Gtk2-Ex-ErrorTextDialog.pot
+SHA1 b189c04924d77e2a7bf00383bcbd33e788766ea4 lib/Gtk2/Ex/ErrorTextDialog.pm
+SHA1 82e62cbc5e493e7011a97887f993e42a01061b76 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
+SHA1 018098b5a02aabb2279467917d3364527a4fc3b2 lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
+SHA1 9ca7d08508a6101f75efed74c7203fa78581e4bc lib/Gtk2/Ex/TextView/FollowAppend.pm
+SHA1 0a15e3c8153c09c4f8e20ef4bc1d254ea7d5aaaf po/Gtk2-Ex-ErrorTextDialog.pot
 SHA1 2f1b387c57b4661021ac7bb3a1e399156118b9d0 po/README
 SHA1 806349aec4b01bfd738a1eecb31f084d5ff141a0 po/header.pot
-SHA1 047475ac0fed2333694732afdd9d6e52b14f5422 t/ErrorTextDialog.t
-SHA1 1a31330025b1309d82306963eed5967aa7ecaade t/FollowAppend.t
-SHA1 591da4ff54edf2e6383306ccc164cccb88abd359 t/Handler.t
+SHA1 7ddf47a208798d734d17395a8494d050299282d7 t/ErrorTextDialog.t
+SHA1 0b8ba3f5f73004af8ef4c79660b6663f52783d46 t/FollowAppend.t
+SHA1 11e87bc89981472ead39aa4184efdb0e2cb40efe t/Handler.t
 SHA1 5e5680b471811244fe93571efc23e7b6089cac3b t/MyTestHelpers.pm
-SHA1 ebf86ebff64fdfa7b6c34910dbeb629bb7a9695d t/SaveDialog.t
+SHA1 cca86cbace033d36845add9942afbf51ae0574d8 t/SaveDialog.t
 SHA1 0dfd843b4b4677c02c8c7681b28598b9a29af0e6 t/test-weaken.t
 SHA1 9127f78a0dfa04976acbb979dd7862ef59a74c58 xt/0-META-read.t
 SHA1 37abd43b41068804ea4bb099fdd89af21be82926 xt/0-Test-DistManifest.t
@@ -86,7 +86,7 @@ SHA1 fb517c2fae5ddac559318bf6a224949115ea3129 xt/0-Test-YAML-Meta.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iD8DBQFMo8VVLFMCIV9q3ToRArIFAKCStv9FvYCPS8xqV3DJj5BMUP2Z4ACglehz
-mqEKK686Gwinroy4G0GqI7w=
-=ijqD
+iD8DBQFMupm6LFMCIV9q3ToRAoteAJsENtsd3ZN8eV77pjvoxbyoChapCQCfXt9I
+EL4j5hh6k2pu7Ns1EtWPtkU=
+=4tl/
 -----END PGP SIGNATURE-----

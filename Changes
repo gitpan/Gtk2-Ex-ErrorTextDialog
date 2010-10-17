@@ -17,7 +17,11 @@ with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 9, October 2010
+    - don't raise on every error, too instrusive
+
 Version 8, September 2010
+    - test manifest only as an author test
 
 Version 7, August 2010
     - oops, fix popup out of exception_handler()
