@@ -1,4 +1,4 @@
-# Copyright 2010 Kevin Ryde
+# Copyright 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -24,7 +24,7 @@ use Scalar::Util;
 use Gtk2;
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 
-our $VERSION = 2;
+our $VERSION = 10;
 
 # uncomment this to run the ### lines
 use Smart::Comments;
@@ -149,7 +149,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2010 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2010, 2011 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published by

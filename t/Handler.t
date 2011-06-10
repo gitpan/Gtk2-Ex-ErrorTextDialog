@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -33,7 +33,7 @@ require Gtk2::Ex::ErrorTextDialog::Handler;
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 9;
+my $want_version = 10;
 is ($Gtk2::Ex::ErrorTextDialog::Handler::VERSION, $want_version,
     'VERSION variable');
 is (Gtk2::Ex::ErrorTextDialog::Handler->VERSION, $want_version,

@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Gtk2-Ex-ErrorTextDialog
-version:            9
+version:            10
 abstract:           Dialog showing error messages in a TextView.
 author:
     - Kevin Ryde <user42@zip.com.au>
@@ -28,9 +28,10 @@ no_index:
     directory:
         - t
         - inc
+        - xt
         - devel
         - examples
-generated_by:       ExtUtils::MakeMaker version 6.55_02
+generated_by:       ExtUtils::MakeMaker version 6.56
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4
@@ -43,6 +44,7 @@ optional_features:
             lib::abs:           0
             Pod::Simple::HTML:  0
             Scalar::Lazy:       0
+            Smart::Comments:    0
             warnings::unused:   0
             X11::Protocol:      0
     maximum_tests:

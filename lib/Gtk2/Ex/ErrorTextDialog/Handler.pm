@@ -1,4 +1,4 @@
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -35,7 +35,7 @@ use Encode;
 use I18N::Langinfo;  # CODESET
 use PerlIO;          # for F_UTF8
 
-our $VERSION = 9;
+our $VERSION = 10;
 
 # set this to 1 for some diagnostic prints (to STDERR)
 use constant DEBUG => 0;
@@ -210,6 +210,9 @@ small and the idea is to keep memory use down by not loading the full
 ErrorTextDialog until needed.  If your program works then the dialog won't
 be needed at all!
 
+See F<examples/simple.pl> in the Gtk2-Ex-ErrorTextDialog sources for a
+complete program with this sort of error handler.
+
 =head1 FUNCTIONS
 
 =over 4
@@ -320,7 +323,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

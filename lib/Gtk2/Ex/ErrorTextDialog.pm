@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -29,7 +29,7 @@ use POSIX ();
 use Glib::Ex::ObjectBits;
 use Gtk2::Ex::Units 14; # version 14 for char_width
 
-our $VERSION = 9;
+our $VERSION = 10;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -40,22 +40,24 @@ Locale::Messages::bind_textdomain_filter  ('Gtk2-Ex-ErrorTextDialog',
 
 use Glib::Object::Subclass
   'Gtk2::MessageDialog',
-  signals => { clear
-               => { param_types => [],
-                    return_type => undef,
-                    class_closure => \&_do_clear,
-                    flags => ['run-last','action'] },
-               popup_save_dialog
-               => { param_types => [],
-                    return_type => undef,
-                    class_closure => \&_do_popup_save_dialog,
-                    flags => ['run-last','action'] },
-               destroy => \&_do_destroy,
+  signals => { destroy => \&_do_destroy,
+
+               clear =>
+               { param_types => [],
+                 return_type => undef,
+                 class_closure => \&_do_clear,
+                 flags => ['run-last','action'] },
+
+               popup_save_dialog =>
+               { param_types => [],
+                 return_type => undef,
+                 class_closure => \&_do_popup_save_dialog,
+                 flags => ['run-last','action'] },
              },
 
   properties => [ Glib::ParamSpec->int
                   ('max-chars',
-                   'max-chars',
+                   __('Maximum characters'),
                    'Maximum number of characters to retain, or -1 for unlimited.',
                    -1,                 # minimum
                    POSIX::INT_MAX(),   # maximum
@@ -711,7 +713,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

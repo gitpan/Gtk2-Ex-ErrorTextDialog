@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -59,33 +59,34 @@ MyMakeMakerExtras::WriteMakefile
                     # only one in Locale::TextDomain, until 1.18 or some such
                     'Locale::Messages'   => 0,
                    },
-   clean     => { FILES => '$(POT_TEMP_FILE)', # if bad xgettext
+   clean     => { ## no critic (RequireInterpolationOfMetachars)
+                 FILES => '$(POT_TEMP_FILE)', # if bad xgettext
                 },
 
-   META_MERGE
-   => { resources
-        => { homepage
-             => 'http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html',
-           },
-        optional_features
-        => { maximum_tests
-             => { description => 'Have "make test" do as much as possible.',
-                  requires => { 'Test::Weaken' => 3,
-                                'Devel::FindRef' => 0,
-                              },
-                },
-             maximum_devel
-             => { description => 'Stuff used variously for development.',
-                  requires => { 'Devel::Loading' => 0,
-                                'lib::abs' => 0,
-                                'Scalar::Lazy' => 0,
-                                'X11::Protocol' => 0,
-                                # part of Gtk2, but name it since used directly
-                                'Gtk2::Pango' => 0,
-                              },
-                },
-           },
-      },
+   META_MERGE =>
+   { resources =>
+     { homepage =>
+       'http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html',
+     },
+     optional_features =>
+     { maximum_tests =>
+       { description => 'Have "make test" do as much as possible.',
+         requires => { 'Test::Weaken' => 3,
+                       'Devel::FindRef' => 0,
+                     },
+       },
+       maximum_devel =>
+       { description => 'Stuff used variously for development.',
+         requires => { 'Devel::Loading' => 0,
+                       'lib::abs' => 0,
+                       'Scalar::Lazy' => 0,
+                       'X11::Protocol' => 0,
+                       # part of Gtk2, but name it since used directly
+                       'Gtk2::Pango' => 0,
+                     },
+       },
+     },
+   },
   );
 
 #------------------------------------------------------------------------------

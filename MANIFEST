@@ -62,7 +62,10 @@ t/Handler.t
 t/MyTestHelpers.pm
 t/SaveDialog.t
 t/test-weaken.t
+xt/0-examples-xrefs.t
 xt/0-META-read.t
+xt/0-no-debug-left-on.t
+xt/0-Test-ConsistentVersion.t
 xt/0-Test-DistManifest.t
 xt/0-Test-Pod.t
 xt/0-Test-Synopsis.t

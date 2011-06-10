@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
+use 5.008;
 use strict;
 use warnings;
 use Gtk2::Ex::ErrorTextDialog;
@@ -60,9 +61,7 @@ diag "on TextView::FollowAppend->new()";
        contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks && defined &explain) {
-    diag "Test-Weaken ", explain $leaks;
-  }
+  MyTestHelpers::test_weaken_show_leaks($leaks);
 }
 diag "on TextView::FollowAppend->new_with_buffer()";
 {
@@ -76,9 +75,7 @@ diag "on TextView::FollowAppend->new_with_buffer()";
        contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks && defined &explain) {
-    diag "Test-Weaken ", explain $leaks;
-  }
+  MyTestHelpers::test_weaken_show_leaks($leaks);
 }
 
 
@@ -98,9 +95,7 @@ diag "on new() ErrorTextDialog";
        contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks && defined &explain) {
-    diag "Test-Weaken ", explain $leaks;
-  }
+  MyTestHelpers::test_weaken_show_leaks($leaks);
 }
 
 
@@ -117,9 +112,7 @@ diag "on instance() ErrorTextDialog";
        contents => \&Test::Weaken::Gtk2::contents_container,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks && defined &explain) {
-    diag "Test-Weaken ", explain $leaks;
-  }
+  MyTestHelpers::test_weaken_show_leaks($leaks);
 }
 
 # with save dialog
@@ -143,9 +136,7 @@ diag "on instance() ErrorTextDialog";
      });
   is ($leaks, undef,
       'Test::Weaken deep garbage collection -- with save dialog too');
-  if ($leaks && defined &explain) {
-    diag "Test-Weaken ", explain $leaks;
-  }
+  MyTestHelpers::test_weaken_show_leaks($leaks);
 }
 
 exit 0;

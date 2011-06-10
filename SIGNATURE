@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.66.
+signed via the Module::Signature module, version 0.68.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -15,78 +15,81 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
-SHA1 70eb493527c0a32fe316c58e629ba727bf50e968 Changes
-SHA1 af9a97c8c3015557b386f044fed2026c040ea240 MANIFEST
-SHA1 e6e7c2904ea5d300c0ddf70fc5a80f5005229aa9 MANIFEST.SKIP
-SHA1 50772bd10a214af57c7e1ec6eaf8714dce9829aa META.yml
-SHA1 851f60b7d3914e73757ae2a18a51732742867b4c Makefile.PL
+SHA1 b8636a8cc49bbd8ed105b953bddacdbf1343c2ab Changes
+SHA1 ae2e3f01405f604944b640d3f4a625fcc5e6f085 MANIFEST
+SHA1 d6f9595a0ae02220d6781c9460782ae32c0d4aaf MANIFEST.SKIP
+SHA1 486fb4c84171649cfe9699d937463405c9c20291 META.yml
+SHA1 a5de101f62e0315a96ab3754d92be9ef0970f830 Makefile.PL
 SHA1 7025827a532801413d9e032b9a32e9347629ae04 README
-SHA1 074254002843b348d54ef60f92d462d56253a9f3 debian/changelog
+SHA1 9b6ea20e0deb28c5256222fda7f40860b4b45b21 debian/changelog
 SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
-SHA1 564e2f4c3104163592deec92a756d4164caca77a debian/control
-SHA1 470e39a5aa5fef386fbbf9b57b7ff33844dd4fd8 debian/copyright
+SHA1 17cba0c66ed12807d9b02fe387280980dd02c965 debian/control
+SHA1 c96357c6cb70dc56278a8b2ee27324b2b4d52dc1 debian/copyright
 SHA1 64c9f988fc8e16d9a111fa5dc052b76d10185658 debian/patches/pod-examples-dir.diff
 SHA1 fd77bd58065ce961d183399d2766203b1069c4fe debian/rules
 SHA1 61652cd1568dcf2614df833eba241755eee34e89 debian/source/format
 SHA1 16ee210d7f4bd7302b0ecc0352f3759a1185398a debian/watch
-SHA1 66c41f119e8e28963ded2816bf1459a83d28c483 devel/Action.pm
-SHA1 a327cdd04e14b9113135c96518011352e8f46162 devel/AddOn-FollowAppend.pm
+SHA1 5c21ecc9a264a35c26d68f7205ef4df991f55dbc devel/Action.pm
+SHA1 22aed61a0aa8797905ae750d033274649e29bed5 devel/AddOn-FollowAppend.pm
 SHA1 cc4e177edc2e0f048548995333c937fdc6e04bde devel/Foo.pm
-SHA1 a9ecf6afa9138ebf3d29c97fc4a5e5a342e3734c devel/Gtk2ExWindowManagerFrame.pm
+SHA1 39a0fec10a30d6bcd78fa64e913781b99058f827 devel/Gtk2ExWindowManagerFrame.pm
 SHA1 8d260057247fc4257586ab1cae7f235a7d1ba5ee devel/MyRunawayWarnAndError.pm
 SHA1 3629fd7998c6d063313de855175dd02540adf94e devel/UsingBegin.pm
 SHA1 b5bd7a3ccabd5f171551e76081f1ef027fdd33ca devel/action.pl
-SHA1 0e551fc47699f452d9a4312c1b232b22f6cf0aac devel/devel-loading.pl
-SHA1 e8929401084e60cb36fd2bdbf5e819ea8e316678 devel/follow.pl
+SHA1 1dca25545ce41ff6bafab7c3b1f2287bf7d5ee75 devel/devel-loading.pl
+SHA1 008a917efd208efd876abde5e652c6e90d229966 devel/follow.pl
 SHA1 3b17979a70cda7602d2cb1aeb1cfd3c57c81566b devel/frame.pl
 SHA1 1f94f2531ed34c0b90e89d715ffff805cadd5dbf devel/horiz.pl
 SHA1 e88f13c46ac1bb3f7b8427e09a58ec6320c14f69 devel/loading.pl
-SHA1 c8a5d436cae602d88ef57abe0358bdcf5ea2e827 devel/max-chars.pl
+SHA1 da35f3f4e5e2a947799bc8edaa51bdad7842e3ca devel/max-chars.pl
 SHA1 a5a55273cd30f8e3f97512e34ec0641618448272 devel/message-set-text.pl
 SHA1 f66b64ff76052dfb680c842c91ddf05162a0bdce devel/message-text-fallback.t
-SHA1 2861cba72f4b20e68cc86dc002d278e7acc1d940 devel/not-safe-etd.pl
-SHA1 c6197ddd4298aeebbd3728a5e037a08014717fa7 devel/not-safe-raw.pl
-SHA1 d33b531d2d596fec687c250036ffca471b01d267 devel/propagated.pl
-SHA1 c53a421e67ea5bce7459361a4d473c0a921a794b devel/recurse-handler.pl
-SHA1 4fe0f7b89028bc62fd036587f8a29d4ea19466ce devel/recurse-idle.pl
-SHA1 55edba5d946e2178aa15fd590fb12fd2d1fcfcb5 devel/recursive-warn.pl
-SHA1 d056d580453c3568bb0b53d91dab85d362733938 devel/run.pl
-SHA1 c301353876f8c96e2656fd4424b0d9b8f55e0041 devel/save-builder.pl
-SHA1 bb9228341bc0296f0ac290ab1f71866eadb69833 devel/save-file.pl
-SHA1 4ea25cf441e778e4d640d9d4bc6d51dedf180c7d devel/screenshot.pl
-SHA1 46b66dde5b17e4ebf8c5f8c6967a1cb288a02ed0 devel/splice-grow.pl
+SHA1 9748dcaf71bc876d488889e7178e10a0add1c05a devel/not-safe-etd.pl
+SHA1 34c4cb6111754289f7fe8f96560b3861f9ce47c7 devel/not-safe-raw.pl
+SHA1 e4a22c1293db6c72b56921142cab73a3177247ee devel/propagated.pl
+SHA1 77827ebd398fc9490258ae28bb42a9edd18ee6e2 devel/recurse-handler.pl
+SHA1 0530c45a39f48f53c3803dc93d3f94ad2b7f2be1 devel/recurse-idle.pl
+SHA1 6e47dfb6c4201ff1c691017eb77ca93c55f0f6c6 devel/recursive-warn.pl
+SHA1 e7b6da986472affaa079aa6a882f1a6cec6d28e6 devel/run.pl
+SHA1 f8bea281517a08796a71b7f03bef5240649296ec devel/save-builder.pl
+SHA1 ba0bdee66909e91e46cf9583208a7e6ac2f258e5 devel/save-file.pl
+SHA1 b2616c3a6f3b11884b37542c359c5a028ebe74a4 devel/screenshot.pl
+SHA1 54b5345f6150d9d544672229626527b4682c63e4 devel/splice-grow.pl
 SHA1 73928fb3d9cb6ba316506ea085cafc2ebb497f2e devel/textview-delete.pl
 SHA1 f58d89cd3da6f112a311989951dc3157992ad5c5 devel/textview-flow.pl
 SHA1 6bd3e2ec294b901a6f7c26053e44fdeff8f514c7 devel/textview.pl
-SHA1 13ba07572a17c401bbd7df42f4dc6be8d1665a9e devel/trace-bytes.pl
+SHA1 11e10b42efc0107d871e27ceb49b3997b2ec25ff devel/trace-bytes.pl
 SHA1 2608219a71b8172a0a7a49ce302059b73f5f7393 devel/version.pl
-SHA1 c2522ecb4799dbc7dbae15e08c20d74dcd350429 examples/keybindings.pl
-SHA1 915265125a5ed7c8d08d6e4058ebda3f91a75d9a examples/simple.pl
-SHA1 3cf3345a9177dbe362dfc8fbf192272f4a611ca8 inc/MyMakeMakerExtras.pm
+SHA1 16f1cb35cbaee35241e44b5f6ca0155d387dddfb examples/keybindings.pl
+SHA1 8d3e0c5ce7f716c8e2c9f398272894dedf8b1e85 examples/simple.pl
+SHA1 e328d750fcfa81100759f3f48cb62dd0187ed1b9 inc/MyMakeMakerExtras.pm
 SHA1 a2fa0855f3a1ea6140956ec567bea259e0099893 inc/MyMakeMakerGettext.pm
-SHA1 692a1ddc2ca6b98cac7b48ea40bc1ac1509e8ed9 inc/my_pod2html
-SHA1 b189c04924d77e2a7bf00383bcbd33e788766ea4 lib/Gtk2/Ex/ErrorTextDialog.pm
-SHA1 82e62cbc5e493e7011a97887f993e42a01061b76 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
-SHA1 018098b5a02aabb2279467917d3364527a4fc3b2 lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
-SHA1 9ca7d08508a6101f75efed74c7203fa78581e4bc lib/Gtk2/Ex/TextView/FollowAppend.pm
-SHA1 0a15e3c8153c09c4f8e20ef4bc1d254ea7d5aaaf po/Gtk2-Ex-ErrorTextDialog.pot
+SHA1 7a988b2aa7ed09f1cb9029a1ef3f0e2139dca0cf inc/my_pod2html
+SHA1 f25e48a55892bab31a30b949bb5cb2c313f88f0d lib/Gtk2/Ex/ErrorTextDialog.pm
+SHA1 3e17b79d8861540643c672d6d434454dbedc9635 lib/Gtk2/Ex/ErrorTextDialog/Handler.pm
+SHA1 a54d77c373c1b6869be05fdce368d8b2a1c816b8 lib/Gtk2/Ex/ErrorTextDialog/SaveDialog.pm
+SHA1 2e919e6f03aa0ae7050340d3caaa0c3352950e5b lib/Gtk2/Ex/TextView/FollowAppend.pm
+SHA1 9e76d6f8f00425c6aaec28413f0ef6d98466d840 po/Gtk2-Ex-ErrorTextDialog.pot
 SHA1 2f1b387c57b4661021ac7bb3a1e399156118b9d0 po/README
-SHA1 806349aec4b01bfd738a1eecb31f084d5ff141a0 po/header.pot
-SHA1 7ddf47a208798d734d17395a8494d050299282d7 t/ErrorTextDialog.t
-SHA1 0b8ba3f5f73004af8ef4c79660b6663f52783d46 t/FollowAppend.t
-SHA1 11e87bc89981472ead39aa4184efdb0e2cb40efe t/Handler.t
-SHA1 5e5680b471811244fe93571efc23e7b6089cac3b t/MyTestHelpers.pm
-SHA1 cca86cbace033d36845add9942afbf51ae0574d8 t/SaveDialog.t
-SHA1 0dfd843b4b4677c02c8c7681b28598b9a29af0e6 t/test-weaken.t
-SHA1 9127f78a0dfa04976acbb979dd7862ef59a74c58 xt/0-META-read.t
-SHA1 37abd43b41068804ea4bb099fdd89af21be82926 xt/0-Test-DistManifest.t
-SHA1 8f93fb4c8f0424a4442cc93c9a2e86342ef55281 xt/0-Test-Pod.t
-SHA1 1de8f07883f6bf1a2ef79f2cb8adf1deb3f61cee xt/0-Test-Synopsis.t
-SHA1 fb517c2fae5ddac559318bf6a224949115ea3129 xt/0-Test-YAML-Meta.t
+SHA1 a5423919f4129764379d16438c2af2d941fe8e3d po/header.pot
+SHA1 40d818ffeaa89abf8df3c484b5eaa18b1edb50a6 t/ErrorTextDialog.t
+SHA1 634bf12be44b84a113a808b9c6aa158026c9a50d t/FollowAppend.t
+SHA1 1a6627eaf75ad7da68944dbbc08d266c8110f97f t/Handler.t
+SHA1 c403f69bce1a210d3e150de65a26d06320ef8a43 t/MyTestHelpers.pm
+SHA1 512de9a5b69e209e96e9ca5499e3cd2888dd44ad t/SaveDialog.t
+SHA1 179a89c2e520d4e2f93c86e087e2b784c3279197 t/test-weaken.t
+SHA1 0279c9310ec528d10a2a14e602bf98f1c776cce1 xt/0-META-read.t
+SHA1 219395eb91b03829e6f14db4ebd57d88ea972e61 xt/0-Test-ConsistentVersion.t
+SHA1 8a5e0f34131de34e584fbb1939c191a152566155 xt/0-Test-DistManifest.t
+SHA1 cc04a5fe5d8b8b38bfd56453d5d2686c8ea58783 xt/0-Test-Pod.t
+SHA1 8cc52e23427a82cfef5802bf512b13c65de2687a xt/0-Test-Synopsis.t
+SHA1 4c14845872d6eb4280e12f862d6ba2c343358c60 xt/0-Test-YAML-Meta.t
+SHA1 daff623f71c9733a72bf120c45422a3737717d32 xt/0-examples-xrefs.t
+SHA1 3510bcc61725fe294e5a508bca4ae78cfe05684e xt/0-no-debug-left-on.t
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-iD8DBQFMupm6LFMCIV9q3ToRAoteAJsENtsd3ZN8eV77pjvoxbyoChapCQCfXt9I
-EL4j5hh6k2pu7Ns1EtWPtkU=
-=4tl/
+iD8DBQFN8W0tLFMCIV9q3ToRAoeGAJ44k0jY8vNG4scXVmqeZNF6NH6cRQCgsPQY
+l+gOH7ontUVimSFLOYbLauM=
+=NuhY
 -----END PGP SIGNATURE-----

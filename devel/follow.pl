@@ -26,18 +26,18 @@ use Gtk2::Ex::TextView::FollowAppend;
 use FindBin;
 my $progname = $FindBin::Script;
 
-{
-  # get_buffer() and get('buffer') both create
-  my $textview = Gtk2::TextView->new;
-  my $buf = $textview->get('buffer');
-  print "$buf\n";
-  print $textview->set('buffer',undef);
-  # $textview->destroy;
-  print $textview->get('buffer');
-  undef $buf;
-  undef $textview;
-  exit 0;
-}
+# {
+#   # get_buffer() and get('buffer') both create
+#   my $textview = Gtk2::TextView->new;
+#   my $buf = $textview->get('buffer');
+#   print "$buf\n";
+#   print $textview->set('buffer',undef);
+#   # $textview->destroy;
+#   print $textview->get('buffer');
+#   undef $buf;
+#   undef $textview;
+#   exit 0;
+# }
 
 
 Gtk2->init;
@@ -85,7 +85,7 @@ $textview->signal_connect (size_allocate => sub {
 
 
 {
-  my $button = Gtk2::Button->new_with_label ("text");
+  my $button = Gtk2::Button->new_with_label ('Insert');
   $button->signal_connect
     (clicked => sub {
        print "$progname: insert text\n";
@@ -95,12 +95,24 @@ $textview->signal_connect (size_allocate => sub {
   $vbox->pack_start ($button, 0,0,0);
 }
 {
-  my $button = Gtk2::Button->new_with_label ("big text");
+  my $button = Gtk2::Button->new_with_label ("Insert Big");
   $button->signal_connect
     (clicked => sub {
-       print "$progname: insert text\n";
+       print "$progname: insert big text\n";
        $textbuf->insert ($textbuf->get_end_iter,
-                         join("\n",1..50) . ('A' x 100));
+                         join("\n",1..50) . ('A' x 100) . "\n");
+       $textview->grab_focus;
+     });
+  $vbox->pack_start ($button, 0,0,0);
+}
+{
+  my $button = Gtk2::Button->new_with_label ("Insert Middle");
+  $button->signal_connect
+    (clicked => sub {
+       print "$progname: insert middle text\n";
+       my $len = $textbuf->get_char_count;
+       my $iter = $textbuf->get_iter_at_offset ($len - 20);
+       $textbuf->insert ($iter, "mid\ndle\n");
        $textview->grab_focus;
      });
   $vbox->pack_start ($button, 0,0,0);

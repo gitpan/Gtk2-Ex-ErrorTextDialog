@@ -1,4 +1,4 @@
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -22,9 +22,9 @@ use warnings;
 use Gtk2;
 
 # uncomment this to run the ### lines
-#use Smart::Comments;
+#use Devel::Comments;
 
-our $VERSION = 9;
+our $VERSION = 10;
 
 use Glib::Object::Subclass
   'Gtk2::TextView',
@@ -134,9 +134,10 @@ sub _want_follow {
   my $cursor_iter = $textbuf->get_iter_at_mark ($textbuf->get_insert);
 
   ### insert at: ($insert_iter||$textbuf->get_end_iter)->get_offset
-  ### cursor: $cursor_iter->get_offset
   ### end: $textbuf->get_end_iter->get_offset
+  ### cursor: $cursor_iter->get_offset
   ### charcount: $textbuf->get_char_count
+  ### cursor is_end: $cursor_iter->is_end
 
   return ($cursor_iter->is_end
           && _iter_is_visible ($self, $insert_iter||$textbuf->get_end_iter));
@@ -275,7 +276,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

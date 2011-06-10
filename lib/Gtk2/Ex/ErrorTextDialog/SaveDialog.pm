@@ -1,4 +1,4 @@
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -24,7 +24,7 @@ use Gtk2;
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Gtk2::Ex::ErrorTextDialog; # for TextDomain utf8 setups
 
-our $VERSION = 9;
+our $VERSION = 10;
 
 use Glib::Object::Subclass
   'Gtk2::FileChooserDialog',
@@ -143,8 +143,7 @@ sub _save_to_filename {
 1;
 __END__
 
-=for stopwords ErrorTextDialog ErrorTextDialog Gtk2-Ex-ErrorTextDialog Gtk2
-SaveDialog filename Ryde
+=for stopwords ErrorTextDialog Gtk2-Ex-ErrorTextDialog Gtk SaveDialog filename Ryde
 
 =head1 NAME
 

@@ -1,4 +1,4 @@
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2011 Kevin Ryde
 #
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -30,36 +30,40 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:98
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:60
+msgid "Maximum characters"
+msgstr ""
+
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:100
 msgid "Errors"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:109
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:111
 msgid "_Popup on Error"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:114
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:116
 msgid ""
 "Whether to popup this dialog when an error occurs.\n"
 "If errors are occurring repeatedly you might not want a popup every time."
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:124
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:126
 msgid ""
 "Save the error messages to a file, perhaps to include in a bug report.\n"
 "(Cut and paste works too, but saving may be better for very long messages.)"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:179
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:181
 msgid "An error has occurred"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:180
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:182
 msgid "No errors"
 msgstr ""
 
 #. TRANSLATORS: The code currently assumes this string is 80 chars or less.
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:340
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:342
 msgid "[Older messages discarded]"
 msgstr ""
 

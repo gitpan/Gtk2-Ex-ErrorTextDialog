@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -28,19 +28,18 @@ BEGIN { MyTestHelpers::nowarnings() }
 
 use Gtk2::Ex::TextView::FollowAppend;
 
-BEGIN {
-  require Gtk2;
-  Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
-  my $have_display = Gtk2->init_check;
-  if (! $have_display) {
-    plan skip_all => "due to no DISPLAY available";
-  }
-  plan tests => 8;
-}
+require Gtk2;
+MyTestHelpers::glib_gtk_versions();
+
+Gtk2->disable_setlocale;  # leave LC_NUMERIC alone for version nums
+Gtk2->init_check
+  or plan skip_all => "due to no DISPLAY available";
+
+plan tests => 8;
 
 #-----------------------------------------------------------------------------
 
-my $want_version = 9;
+my $want_version = 10;
 is ($Gtk2::Ex::TextView::FollowAppend::VERSION, $want_version,
     'VERSION variable');
 is (Gtk2::Ex::TextView::FollowAppend->VERSION,  $want_version,

@@ -1,4 +1,4 @@
-Copyright 2009, 2010 Kevin Ryde
+Copyright 2009, 2010, 2011 Kevin Ryde
 
 This file is part of Gtk2-Ex-ErrorTextDialog.
 
@@ -16,6 +16,9 @@ You should have received a copy of the GNU General Public License along
 with Gtk2-Ex-ErrorTextDialog.  If not, see <http://www.gnu.org/licenses/>.
 
 
+
+Version 10, June 2011
+    - tests more diagnostics on the Test::Weaken checks
 
 Version 9, October 2010
     - don't raise on every error, too instrusive
