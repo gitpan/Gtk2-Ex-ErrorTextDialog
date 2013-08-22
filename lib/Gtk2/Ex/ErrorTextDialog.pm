@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -29,7 +29,7 @@ use POSIX ();
 use Glib::Ex::ObjectBits;
 use Gtk2::Ex::Units 14; # version 14 for char_width
 
-our $VERSION = 10;
+our $VERSION = 11;
 
 # set this to 1 for some diagnostic prints
 use constant DEBUG => 0;
@@ -64,15 +64,11 @@ use Glib::Object::Subclass
                    200_000,            # default
                    Glib::G_PARAM_READWRITE) ];
 
-use constant {
-              # not yet documented
-              _RESPONSE_CLEAR   => 0,
-              _RESPONSE_SAVE    => 1,
-              # _NEXT_RESPONSE    => 2,
+use constant RESPONSE_CLEAR => 0;
+use constant RESPONSE_SAVE  => 1;
 
-              # not yet documented ...
-              _MESSAGE_SEPARATOR => "--------\n",
-             };
+# not yet documented ...
+use constant _MESSAGE_SEPARATOR => "--------\n";
 
 my $instance;
 our @_instance_pending;
@@ -119,14 +115,14 @@ If errors are occurring repeatedly you might not want a popup every time.'));
     $self->add_action_widget ($check, 'none');
   }
   {
-    my $button = $self->add_button ('gtk-save-as', _RESPONSE_SAVE);
+    my $button = $self->add_button ('gtk-save-as', $self->RESPONSE_SAVE);
     Glib::Ex::ObjectBits::set_property_maybe
         ($button,
          # tooltip-text new in Gtk 2.12
          tooltip_text => __('Save the error messages to a file, perhaps to include in a bug report.
 (Cut and paste works too, but saving may be better for very long messages.)'));
   }
-  $self->add_buttons ('gtk-clear' => _RESPONSE_CLEAR,
+  $self->add_buttons ('gtk-clear' => $self->RESPONSE_CLEAR,
                       'gtk-close' => 'close');
 
   # connect to self instead of a class handler because as of Gtk2-Perl 1.220
@@ -180,7 +176,7 @@ sub _do_textbuf_changed {
   _message_dialog_set_text ($self, $any_errors
                             ? __('An error has occurred')
                             : __('No errors'));
-  $self->set_response_sensitive (_RESPONSE_CLEAR, $any_errors);
+  $self->set_response_sensitive ($self->RESPONSE_CLEAR, $any_errors);
 }
 
 # set_default_size() based on desired size_request() with a sensible rows
@@ -209,10 +205,10 @@ sub set_default_size_chars {
 
 sub _do_response {
   my ($self, $response) = @_;
-  if ($response eq _RESPONSE_CLEAR) {
+  if ($response eq $self->RESPONSE_CLEAR) {
     $self->clear;
 
-  } elsif ($response eq _RESPONSE_SAVE) {
+  } elsif ($response eq $self->RESPONSE_SAVE) {
     $self->popup_save_dialog;
 
   } elsif ($response eq 'close') {
@@ -420,9 +416,9 @@ sub _log_to_string {
 #-----------------------------------------------------------------------------
 # generic helpers
 
-# _message_dialog_set_text() sets the text part of a Gtk2::MessageDialog.
-# Gtk 2.10 up has this as a 'text' property, or in past versions it's
-# necessary to dig out the label child widget.
+# _message_dialog_set_text($messagedialog,$text) sets the text part of a
+# Gtk2::MessageDialog.  Gtk 2.10 up has this as a 'text' property, or in
+# past versions it's necessary to dig out the label child widget.
 #
 # It doesn't work to choose between the dialog or sub-widget and to make a
 # set() or set_text() call on.  Gtk2::MessageDialog doesn't have a
@@ -462,26 +458,6 @@ BEGIN {
 __END__
 
 # Unused stuff:
-
-  #   {
-  #     my $nopopup = $self->{'nopopup'}
-  #       = Gtk2::CheckButton->new_with_mnemonic (__('_No Popup'));
-  #     if ($nopopup->can('set_tooltip_text')) {
-  #       # new style of Gtk 2.12
-  #       $nopopup->set_tooltip_text
-  #         (__('Check this to not popup automatically.
-  # Messages are recorded, but the dialog is not popped up.
-  # This is good to ignore a cascade of errors.'));
-  #     }
-  #     $self->action_area->pack_start ($nopopup, 0,0,0);
-  #
-  #     if ($nopopup->can('set_tooltip_text')) { # new in Gtk 2.12
-  #       $nopopup->set_tooltip_text
-  #         (__('Check this to not popup automatically.
-  # Messages are recorded, but the dialog is not popped up.
-  # This is good to ignore a cascade of errors.'));
-  #     }
-  #   }
 
 # Truncating on a message boundary ...
 #
@@ -570,7 +546,7 @@ operations.
     |              Clear  Save-As  Close |
     +------------------------------------+
 
-See L<Gtk2::Ex::ErrorTextDialog::Handler> for functions hooking up Glib
+See L<Gtk2::Ex::ErrorTextDialog::Handler> for functions hooking Glib
 exceptions and Perl warnings to display in an ErrorTextDialog.
 
 ErrorTextDialog is good if there might be a long cascade of messages from
@@ -662,6 +638,17 @@ default handler in those signals does the actual work of clearing or showing
 the save dialog and as usual for action signals that's the place to override
 or specialize in a subclass.
 
+=item C<< $id = Gtk2::Ex::ErrorTextDialog->RESPONSE_CLEAR >>
+
+=item C<< $id = Gtk2::Ex::ErrorTextDialog->RESPONSE_SAVE >>
+
+Return the dialog respond ID for the clear and save actions.  These are the
+responses raised by the clear and save buttons.  The clear response could be
+raised explicitly with
+
+    $errordialog->response ($errordialog->RESPONSE_CLEAR);
+    # same as $errordialog->clear()
+
 =back
 
 =head2 Key Bindings
@@ -713,7 +700,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

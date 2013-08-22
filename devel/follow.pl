@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2013 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -183,6 +183,11 @@ $draw->show;
        $textbuf->insert ($textbuf->get_start_iter, "at\nstart\n");
        $textview->grab_focus;
      });
+  $vbox->pack_start ($button, 0,0,0);
+}
+{
+  my $button = Gtk2::Button->new_from_stock ('gtk-quit');
+  $button->signal_connect (clicked => sub { $toplevel->destroy });
   $vbox->pack_start ($button, 0,0,0);
 }
 

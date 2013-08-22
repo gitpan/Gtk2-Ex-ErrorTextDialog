@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2011 Kevin Ryde
+# Copyright 2011, 2013 Kevin Ryde
 
 # 0-examples-xrefs.t is shared by several distributions.
 #
@@ -19,13 +19,12 @@
 
 BEGIN { require 5 }
 use strict;
-use warnings;
 use ExtUtils::Manifest;
 use Test::More;
 
 use lib 't';
 use MyTestHelpers;
-BEGIN { MyTestHelpers::nowarnings() }
+BEGIN { MyTestHelpers::nowarnings(); }
 
 my $manifest = ExtUtils::Manifest::maniread();
 my @example_files = grep m{examples/.*\.pl$}, keys %$manifest;
@@ -51,9 +50,11 @@ sub any_file_contains_example {
 sub pod_contains_example {
   my ($filename, $example) = @_;
   open FH, "< $filename" or die "Cannot open $filename: $!";
-  my $ret = scalar (grep /F<\Q$example\E>/, <FH>);
+  my $content = do { local $/; <FH> }; # slurp
   close FH or die "Error closing $filename: $!";
-  return $ret > 0;
+  return scalar ($content =~ /F<\Q$example\E>
+                            |F<examples>\s+directory
+                             /xs);
 }
 sub raw_contains_example {
   my ($filename, $example) = @_;
@@ -65,11 +66,12 @@ sub raw_contains_example {
 }
 
 
-plan tests => scalar(@example_files);
+plan tests => scalar(@example_files) + 1;
 my $example;
 foreach $example (@example_files) {
   is (any_file_contains_example($example), 1,
       "$example mentioned in some lib/ file");
 }
+ok(1);
 
 exit 0;

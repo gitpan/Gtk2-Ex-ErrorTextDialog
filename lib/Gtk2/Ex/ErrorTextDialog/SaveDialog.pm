@@ -1,4 +1,4 @@
-# Copyright 2009, 2010, 2011 Kevin Ryde
+# Copyright 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -24,7 +24,7 @@ use Gtk2;
 use Locale::TextDomain ('Gtk2-Ex-ErrorTextDialog');
 use Gtk2::Ex::ErrorTextDialog; # for TextDomain utf8 setups
 
-our $VERSION = 10;
+our $VERSION = 11;
 
 use Glib::Object::Subclass
   'Gtk2::FileChooserDialog',

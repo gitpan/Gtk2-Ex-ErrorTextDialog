@@ -34,36 +34,36 @@ msgstr ""
 msgid "Maximum characters"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:100
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:96
 msgid "Errors"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:111
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:107
 msgid "_Popup on Error"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:116
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:112
 msgid ""
 "Whether to popup this dialog when an error occurs.\n"
 "If errors are occurring repeatedly you might not want a popup every time."
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:126
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:122
 msgid ""
 "Save the error messages to a file, perhaps to include in a bug report.\n"
 "(Cut and paste works too, but saving may be better for very long messages.)"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:181
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:177
 msgid "An error has occurred"
 msgstr ""
 
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:182
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:178
 msgid "No errors"
 msgstr ""
 
 #. TRANSLATORS: The code currently assumes this string is 80 chars or less.
-#: lib/Gtk2/Ex/ErrorTextDialog.pm:342
+#: lib/Gtk2/Ex/ErrorTextDialog.pm:338
 msgid "[Older messages discarded]"
 msgstr ""
 

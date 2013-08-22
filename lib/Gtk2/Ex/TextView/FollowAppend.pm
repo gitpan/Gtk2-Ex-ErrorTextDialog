@@ -1,4 +1,4 @@
-# Copyright 2009, 2010, 2011 Kevin Ryde
+# Copyright 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -22,20 +22,29 @@ use warnings;
 use Gtk2;
 
 # uncomment this to run the ### lines
-#use Devel::Comments;
+# use Smart::Comments;
 
-our $VERSION = 10;
+our $VERSION = 11;
 
 use Glib::Object::Subclass
   'Gtk2::TextView',
   signals => { size_allocate => \&_do_size_allocate,
-               notify        => \&_do_notify,
+               # notify        => \&_do_notify,
                destroy       => \&_do_destroy,
              };
 
 sub new_with_buffer {
   my ($class, $textbuf) = @_;
   return $class->Glib::Object::new (buffer => $textbuf);
+}
+
+# "notify" is done as a connect to self rather than a class handler.
+# A long-standing glib bug causes a $self->signal_chain_from_overridden to
+# go to the wrong handler, when a notify is invoked from under another
+# handler, or something like that.  Very annoying.
+sub INIT_INSTANCE {
+  my ($self) = @_;
+  $self->signal_connect (notify => \&_do_notify);
 }
 
 # 'destroy' class closure
@@ -58,9 +67,15 @@ sub _do_destroy {
 sub _do_notify {
   my ($self, $pspec) = @_;
   ### FollowAppend _do_notify(): $pspec->get_name
-  $self->signal_chain_from_overridden ($pspec);
 
-  # after 'destroy' runs it's important not to call ->get_buffer() since
+  # my $invocation_hint = $self->signal_get_invocation_hint;
+  # require Data::Dumper;
+  # print Data::Dumper->Indent(1)->Dump([$invocation_hint],
+  #                                     ['invocation_hint']);
+
+#  $self->signal_chain_from_overridden ($pspec);
+
+  # After 'destroy' runs it's important not to call ->get_buffer() since
   # that func creates a new TextBuffer in place of what
   # gtk_text_view_destroy() just destroyed and set to NULL.  If a textbuf is
   # re-created like that it leads to a fatal error in
@@ -276,7 +291,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published

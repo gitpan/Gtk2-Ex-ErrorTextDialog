@@ -18,6 +18,7 @@
 
 
 package Gtk2ExWindowManagerFrame;
+use 5.008;
 use strict;
 use warnings;
 use Exporter;

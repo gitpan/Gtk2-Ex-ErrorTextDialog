@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2009, 2010, 2011 Kevin Ryde
+# Copyright 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -65,9 +65,11 @@ MyMakeMakerExtras::WriteMakefile
 
    META_MERGE =>
    { resources =>
-     { homepage =>
-       'http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html',
+     { homepage => 'http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html',
+       license  => 'http://www.gnu.org/licenses/gpl.html',
      },
+     no_index => { directory=>['devel'] },
+
      optional_features =>
      { maximum_tests =>
        { description => 'Have "make test" do as much as possible.',
@@ -75,25 +77,25 @@ MyMakeMakerExtras::WriteMakefile
                        'Devel::FindRef' => 0,
                      },
        },
-       maximum_devel =>
-       { description => 'Stuff used variously for development.',
-         requires => { 'Devel::Loading' => 0,
-                       'lib::abs' => 0,
-                       'Scalar::Lazy' => 0,
-                       'X11::Protocol' => 0,
-                       # part of Gtk2, but name it since used directly
-                       'Gtk2::Pango' => 0,
-                     },
-       },
      },
    },
   );
+
+# maximum_devel =>
+# { description => 'Stuff used variously for development.',
+#   requires => { 'Devel::Loading' => 0,
+#                 'lib::abs' => 0,
+#                 'Scalar::Lazy' => 0,
+#                 'X11::Protocol' => 0,
+#                 # part of Gtk2, but name it since used directly
+#                 'Gtk2::Pango' => 0,
+#               },
+# },
 
 #------------------------------------------------------------------------------
 package MY;
 sub postamble {
   my ($makemaker) = @_;
-  return
-    MyMakeMakerExtras::postamble($makemaker)
-        . MyMakeMakerGettext::postamble($makemaker);
+  return (MyMakeMakerExtras::postamble($makemaker)
+          . MyMakeMakerGettext::postamble($makemaker));
 }

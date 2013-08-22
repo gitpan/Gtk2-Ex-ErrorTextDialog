@@ -5,7 +5,7 @@
 
 
 
-# Copyright 2009, 2010, 2011 Kevin Ryde
+# Copyright 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Gtk2-Ex-ErrorTextDialog.
 #
@@ -28,7 +28,7 @@ use warnings;
 use Gtk2;
 use Glib::Ex::SignalIds;
 
-our $VERSION = 10
+our $VERSION = 11
 
 use constant DEBUG => 0;
 
@@ -215,7 +215,7 @@ L<http://user42.tuxfamily.org/gtk2-ex-errortextdialog/index.html>
 
 =head1 LICENSE
 
-Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Gtk2-Ex-ErrorTextDialog is Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 Gtk2-Ex-ErrorTextDialog is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published
